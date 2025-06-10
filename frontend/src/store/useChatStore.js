@@ -72,9 +72,9 @@ export const useChatStore = create((set, get) => ({
       console.log("subscribe to message called")
       const socket = useAuthStore.getState().socket
 
-
+      socket?.off('newMessage');
       socket?.on('newMessage', (newMessage) => {
-         if (newMessage.senderId !== selectedUser._id) return
+         if (newMessage.senderId !== get().selectedUser._id) return
          console.log("message received")
          set({ messages: [...get().messages, newMessage] })
       })
