@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+:root {
+   --size-0\.75rem: calc(100vw*0.0083334*0.75);
+   --size-1rem: calc(100vw*0.0083334);
+   --size-1\.5rem: calc(100vw*0.0083334*1.5);
+   --size-2rem: calc(100vw*0.0083334*2);
+   --size-3rem: calc(100vw*0.0083334*3);
+   --size-3\.5rem: calc(100vw*0.0083334*3.5);
+   --size-4rem: calc(100vw*0.0083334*4);
+   --size-5rem: calc(100vw*0.0083334*5);
+   --size-6rem: calc(100vw*0.0083334*6);
+   --size-8rem: calc(100vw*0.0083334*8);
+   --size-12rem: calc(100vw*0.0083334*12);
+
+   /* dynamic sizes */
+   /* ranges from 0-1 0=100% 1=500% */
+   --zoom-level: calc((var(--device-pixel-ratio)-1)/4.0);
+   /* scales of 0.75rem */
+   --size-0\.75rem-to-1\.2\*0\.75rem: calc(var(--size-0-75rem)+((var(--device-pixel-ratio)-1)/4.0)*(var(--size-0-75rem)*0.2));
+
+   --size-0\.75rem-to-1\.4\*0\.75rem: calc(var(--size-0-75rem)+((var(--device-pixel-ratio)-1)/4.0)*(var(--size-0-75rem)*0.4));
+
+   --size-0\.75rem-to-1\.6\*0\.75rem: calc(var(--size-0-75rem)+((var(--device-pixel-ratio)-1)/4.0)*(var(--size-0-75rem)*0.6));
+
+   /* scales of 1rem */
+   --size-1rem-to-1\.2\*1rem: calc(var(--size-1rem)+var(--zoom-level)*(var(--size-1rem)*0.2));
+
+   --size-1rem-to-1\.4\*1rem: calc(var(--size-1rem)+var(--zoom-level)*(var(--size-1rem)*0.4));
+
+   --size-1rem-to-1\.6\*1rem: calc(var(--size-1rem)+var(--zoom-level)*(var(--size-1rem)*0.6));
+
+   /* scales of 1.5rem */
+   --size-1\.5rem-to-1\.2\*1\.5rem: calc(var(--size-1-5rem)+var(--zoom-level)*(var(--size-1-5rem)*0.2));
+
+   --size-1\.5rem-to-1\.4\*1\.5rem: calc(var(--size-1-5rem)+var(--zoom-level)*(var(--size-1-5rem)*0.4));
+
+   --size-1\.5rem-to-1\.6\*1\.5rem: calc(var(--size-1-5rem)+var(--zoom-level)*(var(--size-1-5rem)*0.6));
+
+   /* scales of 3rem */
+   --size-3rem-to-1\.2\*3rem: calc(var(--size-3rem)+var(--zoom-level)*(var(--size-3rem)*0.2));
+
+   --size-3rem-to-1\.4\*3rem: calc(var(--size-3rem)+var(--zoom-level)*(var(--size-3rem)*0.4));
+
+   --size-3rem-to-1\.6\*3rem: calc(var(--size-3rem)+var(--zoom-level)*(var(--size-3rem)*0.6));
+
+   /* scales of 3.5rem */
+   --size-3\.5rem-to-1\.2\*3\.5rem: calc(var(--size-3-5rem)+var(--zoom-level)*(var(--size-3-5rem)*0.2));
+
+   --size-3\.5rem-to-1\.4\*3\.5rem: calc(var(--size-3-5rem)+var(--zoom-level)*(var(--size-3-5rem)*0.4));
+
+   --size-3\.5rem-to-1\.6\*3\.5rem: calc(var(--size-3-5rem)+var(--zoom-level)*(var(--size-3-5rem)*0.6));
+
+   /* scales of 6rem */
+   --size-6rem-to-1\.2\*6rem: calc(var(--size-6rem)+var(--zoom-level)*(var(--size-6rem)*0.2));
+
+   --size-6rem-to-1\.4\*6rem: calc(var(--size-6rem)+var(--zoom-level)*(var(--size-6rem)*0.4));
+
+   --size-6rem-to-1\.6\*6rem: calc(var(--size-6rem)+var(--zoom-level)*(var(--size-6rem)*0.6));
+}
+
+:root {
+   /* fluid sizes */
+   --size-h1: clamp(2rem, 5vw + 1rem, 3rem);
+   --size-h2: clamp(1.5rem, 4vw + 0.75rem, 2.25rem);
+   --size-h3: clamp(1.25rem, 3vw + 0.5rem, 1.75rem);
+   --size-h4: clamp(1rem, 2.5vw + 0.5rem, 1.5rem);
+   --size-h5: clamp(0.875rem, 2vw + 0.5rem, 1.125rem);
+   --size-h6: clamp(0.75rem, 1.5vw + 0.5rem, 1rem);
+   --size-xl: clamp();
+   --size-2xl: clamp();
+   --size-3xl: clamp();
+   --size-4xl: clamp();
+}
+
+@theme {
+   --breakpoint-3xs: 12rem;
+   --breakpoint-2xs: 16rem;
+   --breakpoint-xs: 20rem;
+   --breakpoint-sm: 30rem;
+   --breakpoint-md: 40rem;
+   --breakpoint-lg: 50rem;
+   --breakpoint-xl: 64rem;
+   --breakpoint-2xl: 80rem;
+   --breakpoint-3xl: 100rem;
+   --breakpoint-4xl: 120rem;
+}

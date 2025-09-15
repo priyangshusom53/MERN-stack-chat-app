@@ -1,4 +1,8 @@
 import './globals.css';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
+
+import { SetDisplayVars } from './_utils/displayinfo.js';
 
 export const metadata = {
   title: 'Next.js',
@@ -8,7 +12,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className='m-0 w-full h-full'>
-      <body className='m-0 min-w-screen min-h-screen'>{children}</body>
-    </html>
+
+      <body className='m-0 min-w-screen min-h-screen max-w-screen max-h-screen w-full h-full flex flex-row justify-center items-center'>
+
+        <SidebarProvider className={"w-full h-full flex flex-row justify-start items-stretch "}>
+
+          <AppSidebar className="w-auto h-full" />
+          <main className='h-full flex-1 shrink'>
+            {children}
+          </main>
+
+        </SidebarProvider>
+      </body>
+    </html >
   )
 }

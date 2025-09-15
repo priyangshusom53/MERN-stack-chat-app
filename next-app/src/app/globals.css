@@ -1,5 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+
+/*---imports---*/
+@import './_components/border.css';
+@import './_components/scale.css';
+@import './_components/scrollbar.css';
+
+@layer theme, base, components, utilities;
+
 /*---break---*/
 @custom-variant dark (&:is(.dark *));
 
@@ -15,6 +23,13 @@
    --font-size-3xl: clamp(1.875rem, 1.6rem + 1.2vw, 2.5rem);
    --font-size-4xl: clamp(2.25rem, 2rem + 1.5vw, 3rem);
    --radius: 0.625rem;
+
+   /* border sizes */
+   /* --border-05px: calc(100vw*0.000520833*0.5);
+   --border-1px: calc(100vw*0.000520833);
+   --border-2px: calc(100vw*0.000520833*2);
+   --border-4px: calc(100vw*0.000520833*4); */
+
    /* --radius: 0rem; */
    --background: oklch(1 0 0);
    --foreground: oklch(0.145 0 0);
@@ -48,6 +63,14 @@
    --sidebar-border: oklch(0.922 0 0);
    --sidebar-ring: oklch(0.708 0 0);
 }
+
+/* border sizes
+:root {
+   --border-05px: calc(100vw*0.000520834*0.5);
+   --border-1px: calc(100vw*0.000520834);
+   --border-2px: calc(100vw*0.000520834*2);
+   --border-4px: calc(100vw*0.000520834*4);
+} */
 
 @theme inline {
    --color-background: var(--background);
@@ -93,7 +116,7 @@
    font-size: var(--font-size-4xl);
 } */
 
-h2 {
+/* h2 {
    font-size: var(--font-size-3xl);
 }
 
@@ -115,7 +138,7 @@ h6 {
 
 html {
    font-size: var(--font-size-base);
-}
+} */
 
 /* @media (prefers-color-scheme: dark) {
    :root {
@@ -173,5 +196,29 @@ body {
 
    body {
       @apply bg-background text-foreground;
+   }
+}
+
+@layer base {
+   :root {
+      --sidebar: oklch(0.985 0 0);
+      --sidebar-foreground: oklch(0.145 0 0);
+      --sidebar-primary: oklch(0.205 0 0);
+      --sidebar-primary-foreground: oklch(0.985 0 0);
+      --sidebar-accent: oklch(0.97 0 0);
+      --sidebar-accent-foreground: oklch(0.205 0 0);
+      --sidebar-border: oklch(0.922 0 0);
+      --sidebar-ring: oklch(0.708 0 0);
+   }
+
+   .dark {
+      --sidebar: oklch(0.205 0 0);
+      --sidebar-foreground: oklch(0.985 0 0);
+      --sidebar-primary: oklch(0.488 0.243 264.376);
+      --sidebar-primary-foreground: oklch(0.985 0 0);
+      --sidebar-accent: oklch(0.269 0 0);
+      --sidebar-accent-foreground: oklch(0.985 0 0);
+      --sidebar-border: oklch(1 0 0 / 10%);
+      --sidebar-ring: oklch(0.439 0 0);
    }
 }

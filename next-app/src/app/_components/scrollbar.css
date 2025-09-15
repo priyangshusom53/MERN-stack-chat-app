@@ -1,0 +1,25 @@
+/* Target the scrollbar itself */
+.scrollbar-style::-webkit-scrollbar {
+   width: 6px;
+   /* Width of the vertical scrollbar */
+   height: 6px;
+   /* Height of the horizontal scrollbar */
+
+}
+
+/* Target the scrollbar track (the area behind the thumb) */
+.scrollbar-style::-webkit-scrollbar-track {
+   background: none;
+   border-radius: 4px;
+}
+
+/* Target the scrollbar thumb (the draggable part) */
+.scrollbar-style::-webkit-scrollbar-thumb {
+   background: #8888887a;
+   border-radius: 4px;
+}
+
+/* Change the thumb's appearance on hover */
+.scrollbar-style::-webkit-scrollbar-thumb:hover {
+   background: #5555556a;
+}
