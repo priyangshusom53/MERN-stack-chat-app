@@ -1,0 +1,32 @@
+import { findUserById } from '../db/models/user.js';
+import * as jwt from '../utils/jwt.js';
+
+export const verifyUser = async (req, res, next) => {
+   const cookieHeader = req.headers['cookie'];
+   let cookies = {};
+   if (cookieHeader) {
+      cookies = Object.fromEntries(
+         cookieHeader.split(';').map(c => {
+            const [key, value] = c.trim().split('=');
+            return [key, decodeURIComponent(value)];
+         })
+      );
+   }
+
+   try {
+      if (!cookies.sessionId) throw new Error("No sessionId porvided");
+      const token = cookies.sessionId;
+      const decoded = jwt.verifyToken(token);
+      if (decoded !== null) {
+         const user = await findUserById(dbConnection, decoded.userId)
+         next();
+      }
+      else {
+         throw new Error("Invalid sessionId");
+      }
+
+   } catch (err) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Invalid or expired token" }));
+   }
+}
