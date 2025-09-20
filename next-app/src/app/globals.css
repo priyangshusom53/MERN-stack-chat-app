@@ -112,41 +112,6 @@
    --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* h1 {
-   font-size: var(--font-size-4xl);
-} */
-
-/* h2 {
-   font-size: var(--font-size-3xl);
-}
-
-h3 {
-   font-size: var(--font-size-2xl);
-}
-
-h4 {
-   font-size: var(--font-size-xl);
-}
-
-h5 {
-   font-size: var(--font-size-lg);
-}
-
-h6 {
-   font-size: var(--font-size-base);
-}
-
-html {
-   font-size: var(--font-size-base);
-} */
-
-/* @media (prefers-color-scheme: dark) {
-   :root {
-      --background: #0a0a0a;
-      --foreground: #ededed;
-   }
-} */
-
 body {
    border-radius: 0px;
 }

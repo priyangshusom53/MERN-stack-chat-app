@@ -1,6 +1,8 @@
 import './globals.css';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppSidebar } from "@/app/_components/sidebar-components/sidebar.js"
+
+import { SidebarContextProvider } from './_components/sidebar-components/sidebar.js'
 
 import { SetDisplayVars } from './_utils/displayinfo.js';
 
@@ -11,18 +13,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className='m-0 w-full h-full'>
+    <html lang="en" className='m-0 w-full h-full '>
 
-      <body className='m-0 min-w-screen min-h-screen max-w-screen max-h-screen w-full h-full flex flex-row justify-center items-center'>
+      <body className='m-0 w-full h-full flex flex-row justify-center items-center'>
 
-        <SidebarProvider className={"w-full h-full flex flex-row justify-start items-stretch "}>
+        <SidebarContextProvider >
 
-          <AppSidebar className="w-auto h-full" />
-          <main className='h-full flex-1 shrink'>
+
+          <main className='box-border p-0 m-0 h-full w-full flex justify-center items-center shrink '>
             {children}
           </main>
 
-        </SidebarProvider>
+        </SidebarContextProvider>
       </body>
     </html >
   )

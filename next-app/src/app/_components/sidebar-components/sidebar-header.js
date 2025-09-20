@@ -1,8 +1,15 @@
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { Collapsible } from "./sidebar"
+import { cn } from "@/lib/utils"
 
-export default function SidebarHeader({ components }) {
+export function SidebarHeader({ icononly, className, children }) {
    return (<>
-      <div className="box-border px-2 md:px-6 sticky top-0 left-0 w-full flex flex-col justify-center items-center overflow-hidden">
-         {components ? components : <></>}
+      <div className={cn(`sticky top-0 left-0 flex flex-row items-center`, className)}>
+         <Collapsible
+            icononly={icononly}
+         >
+            {children}
+         </Collapsible>
       </div>
    </>)
 }

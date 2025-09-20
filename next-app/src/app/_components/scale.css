@@ -66,7 +66,7 @@
    --size-h3: clamp(1.25rem, 3vw + 0.5rem, 1.75rem);
    --size-h4: clamp(1rem, 2.5vw + 0.5rem, 1.5rem);
    --size-h5: clamp(0.875rem, 2vw + 0.5rem, 1.125rem);
-   --size-h6: clamp(0.75rem, 1.5vw + 0.5rem, 1rem);
+   --size-h6: clamp(0.75rem, 1vw + 0.5rem, 1rem);
    --size-xl: clamp();
    --size-2xl: clamp();
    --size-3xl: clamp();

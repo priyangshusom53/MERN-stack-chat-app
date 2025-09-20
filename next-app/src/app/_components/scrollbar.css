@@ -1,8 +1,8 @@
 /* Target the scrollbar itself */
 .scrollbar-style::-webkit-scrollbar {
-   width: 6px;
+   width: 4px;
    /* Width of the vertical scrollbar */
-   height: 6px;
+   height: 4px;
    /* Height of the horizontal scrollbar */
 
 }

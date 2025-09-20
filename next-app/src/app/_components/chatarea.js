@@ -1,73 +1,90 @@
 import ChatBubble from "./chatbubble"
 
+const _ = null
 import contactImage from '../../../public/contact-avatar.svg'
-export default function ChatArea() {
+export default function ChatArea({ messages }) {
    return (
       <>
          <div className="relative w-full h-full flex flex-col justify-center items-center">
             {/* contact header */}
-            <div className="w-[100%] sticky top-0 left-0 px-2 md:px-8  flex flex-row justify-start items-center">
+            <div className={`w-[100%] sticky top-0 left-0 px-2 md:px-8  flex flex-row justify-start items-center ${interaction_color(_, true)} border-b-[0.5px]`}>
                <ContactHeader
                   contactImage={contactImage}
                   contactName={"TAnanlnala"}
                   contactId={"@TAnanlnala"}
                />
             </div>
-            {/* chat area */}
-            <div className="w-full flex-1 px-2 md:px-8 flex flex-col overflow-auto scrollbar-style justify-end-safe items-stretch gap-[length:var(--size-h4)]">
-               <ChatBubble
-                  message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
-                  type={"sent"}
-               />
-               <ChatBubble
-                  message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
-                  type={"received"}
-               />
-               <ChatBubble
-                  message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
-                  type={"sent"}
-               />
-               <ChatBubble
-                  message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
-                  type={"sent"}
-               />
-               <ChatBubble
-                  message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
-                  type={"received"}
-               />
-               <ChatBubble
-                  message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
-                  type={"received"}
-               />
-               <ChatBubble
-                  message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
-                  type={"sent"}
-               />
-               <ChatBubble
-                  message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
-                  type={"sent"}
-               />
-               <ChatBubble
-                  message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
-                  type={"received"}
-               />
+            <div className={cn(`flex-1 w-full px-4 ${displayStyles.flex_col_center} justify-start overflow-auto scrollbar-style  items-center`)}>
+               <div className={cn(`place-self-end mt-auto py-4 ${displayStyles.flex_col_center} justify-end max-w-[40rem] mx-auto gap-[length:var(--size-h4)] items-stretch `)}>
+                  {/* chat area */}
+
+                  <ChatBubble
+                     message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
+                     type={"sent"}
+                  />
+                  <ChatBubble
+                     message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
+                     type={"received"}
+                  />
+                  <ChatBubble
+                     message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
+                     type={"sent"}
+                  />
+                  <ChatBubble
+                     message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
+                     type={"sent"}
+                  />
+                  <ChatBubble
+                     message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
+                     type={"received"}
+                  />
+                  <ChatBubble
+                     message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
+                     type={"received"}
+                  />
+                  <ChatBubble
+                     message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
+                     type={"sent"}
+                  />
+                  <ChatBubble
+                     message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
+                     type={"sent"}
+                  />
+                  <ChatBubble
+                     message={"text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-none text-wrap tracking-tight"}
+                     type={"received"}
+                  />
+               </div>
             </div>
+
             {/* input section */}
             <div className="w-[100%] sticky bottom-0 left-0 px-2 md:px-8 flex justify-center items-center">
                <InputSection />
             </div>
          </div>
+
+
       </>
    )
 }
 
 
+import { cn } from "@/lib/utils";
+import { displayStyles, textStyles, h_lvl_2_3, bg_fg_color, interaction_color, Styles } from "./styles";
+
+const txt_level_2 = cn(textStyles.text_h5, "md:text-[length:var(--size-h4)] md:leading-[length:calc(1.3*var(--size-h4))]")
+const txt_level_3 = cn(textStyles.text_h6, "md:text-[length:var(--size-h5)] md:leading-[length:calc(1.4*var(--size-h5))]")
 import Image from "next/image";
 function ContactHeader({ contactImage, contactName, contactId }) {
+   const styles = new Styles()
+      .m('0.5rem', '0.5rem', 0, 0)
+      .build()
    return (<>
-      <div className="w-full mt-[length:calc(0.6*var(--size-h4))] md:mt-[length:calc(0.6*var(--size-h3))] mb-[length:calc(0.6*var(--size-h4))] md:mb-[length:calc(0.6*var(--size-h3))] flex flex-row justify-start items-center mr-auto">
-         <div className="w-full flex flex-row justify-start items-center gap-x-[length:calc(0.2*var(--size-h6))] md:gap-x-[length:calc(0.6*var(--size-h6))]">
-            <div className="h-[100%] aspect-square flex flex-col justify-center items-center shrink-0">
+      <div className={cn(`w-full flex flex-row justify-start items-center mr-auto ${bg_fg_color()} `)}
+         style={styles}
+      >
+         <div className="w-full flex flex-row justify-start items-center gap-x-[length:calc(0.2*var(--size-h6))] md:gap-x-[length:calc(0.6*var(--size-h6))] ">
+            <div className="h-[100%] aspect-square flex flex-col justify-center items-center shrink-0 place-self-start">
                <div className="w-full h-full rounded-full overflow-hidden flex justify-center items-center">
                   <Image
                      src={contactImage}
@@ -79,8 +96,8 @@ function ContactHeader({ contactImage, contactName, contactId }) {
                </div>
             </div>
             <div className="flex flex-col justify-center items-start">
-               <div className="text-(length:--size-h5) md:text-(length:--size-h4) leading-none "><span>{contactName}</span></div>
-               <div className="text-(length:--size-h6) md:text-(length:--size-h5) leading-[length:calc(1.2*var(--size-h6))] md:leading-[length:calc(1.2*var(--size-h5))]"><span>{contactId}</span></div>
+               <div className={cn(textStyles.text_h5, 'leading-none h-[length:calc(1*var(--size-h5))]  md:h-[length:calc(1*var(--size-h4))]', displayStyles.flex_row_start_center)}><span>{contactName}</span></div>
+               <div className={textStyles.text_h6}><span>{contactId}</span></div>
             </div>
 
          </div>

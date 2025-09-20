@@ -6,15 +6,19 @@ const maxFontSize = {
    "h": "--size-h4",
    "md:": "--size-h3"
 }
+import { cn } from "@/lib/utils";
+import { textStyles, bg_fg_color, interaction_color, displayStyles } from "./styles";
 
+const txt_level_2 = cn(textStyles.text_h5, "md:text-[length:var(--size-h4)] md:leading-[length:calc(1.3*var(--size-h4))]")
+const txt_level_3 = cn(textStyles.text_h6, "md:text-[length:var(--size-h5)] md:leading-[length:calc(1.4*var(--size-h5))]")
 
-export default function ContactCard({ imageSrc, status, username, lastMessage, styles }) {
+export default function ContactCard({ imageSrc, status, username, lastMessage, className }) {
    return (
       <div
-         className={`@container w-${styles?.height ? `[${styles.height}px]` : 'full'}  box-border border border-l-0  bg-gray-200 flex flex-row items-center`}
+         className={`@container w-full box-border ${bg_fg_color()} ${interaction_color()} flex flex-row justify-start items-stretch ${textStyles.text_color}`}
       >
          {/* status */}
-         <div className="h-full w-[1%] md:w-[1%] bg-green-300"></div>
+         <div className="w-[0%] md:w-[0%]  bg-green-300"></div>
          {/* content */}
          <div className="flex-1 px-2 md:px-6 mt-[length:calc(0.6*var(--size-h4))] md:mt-[length:calc(0.6*var(--size-h3))] flex flex-row items-start gap-x-[length:calc(0.2*var(--size-h6))] md:gap-x-[length:calc(0.6*var(--size-h6))]">
             {/* Avatar */}
@@ -37,16 +41,16 @@ export default function ContactCard({ imageSrc, status, username, lastMessage, s
                <div className=" h-auto flex flex-col justify-start overflow-hidden ">
                   <div className="h-auto w-[100%]">
                      <div
-                        className={` h-[length:calc(1*var(--size-h5))]  md:h-[length:calc(1*var(--size-h4))] text-[length:var(--size-h5)] md:text-[length:var(--size-h4)] leading-[length:var(--size-h5)]  md:leading-[length:var(--size-h4)] leading-none font-semibold break-all tracking-tight line-clamp-1 text-wrap overflow-hidden text-clip text-ellipsis `}
+                        className={cn(` h-[length:calc(1*var(--size-h5))]  md:h-[length:calc(1*var(--size-h4))] ${textStyles.text_h5} leading-none  break-all tracking-tight line-clamp-1 text-wrap wrap-anywhere overflow-hidden text-clip text-ellipsis ${displayStyles.flex_row_start_center}`)}
                         style={{}}
                      >
-                        <span className="align-top">
+                        <span className="">
                            {username}
                         </span>
                      </div>
                   </div>
-                  <div className="max-h-full max-w-full 
-               text-[length:calc(0.8*var(--size-h6))] md:text-[length:var(--size-h5)] leading-[length:calc(2*0.8*var(--size-h6))]  md:leading-[length:calc(2*var(--size-h5))] break-all line-clamp-1 text-wrap tracking-tight truncate ">
+                  <div className={`max-h-full max-w-full 
+               ${textStyles.text_h6} break-all line-clamp-1 text-wrap tracking-tight truncate wrap-anywhere`}>
                      <span className="">{lastMessage}</span>
                   </div>
                   <div className="min-h-[length:calc(0.6*var(--size-h4))] md:min-h-[length:calc(0.6*var(--size-h3))] grow shrink-0 w-full"></div>
