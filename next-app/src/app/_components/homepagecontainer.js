@@ -4,14 +4,13 @@ import {
    ResizablePanelGroup,
 } from "@/components/ui/resizable"
 
+import { cn } from "@/lib/utils.js";
 
-
-export default function HomePageContainer({ sidebar, contacts, chatArea, className }) {
+export default function HomePageContainer({ children, className }) {
    return (
       <>
-         <div className={`w-[100vw] h-[100vh] shrink m-0 box-border flex flex-row ${className} `}>
-            <div className="h-full shrink-0 flex flex-col justify-center items-center">{sidebar ? sidebar : <></>}</div>
-            <div className="flex-1 shrink w-full h-full ">{chatArea ? chatArea : <></>}</div>
+         <div className={cn(`w-[100vw] h-[100vh] shrink m-0 box-border flex flex-row`, className)}>
+            {children}
          </div>
       </>
    );

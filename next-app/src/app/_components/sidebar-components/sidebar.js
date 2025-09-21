@@ -39,10 +39,10 @@ export const SidebarContextProvider = ({ children }) => {
    )
 }
 
-export const Sidebar = ({ children, width, expandedWidth, height, location, className }) => {
+export const Sidebar = ({ children, width, expandedWidth, height, position, className }) => {
 
    const { open, state } = useSidebar();
-   const isVertical = (location === 'vertical') ? true : false
+   const isVertical = (position === 'vertical') ? true : false
 
    return (
       <div data-state={state} className={`${(isVertical) ? `h-[${height ?? '100%'}] w-auto ${open ? `w-[${expandedWidth}]` : 'w-auto'}` : `w-[${width ?? '100%'}] h-auto`} shrink-0 ${displayStyles.flex_row_center} group peer`}
