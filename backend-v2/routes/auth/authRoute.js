@@ -2,8 +2,9 @@ import { Router } from "express";
 
 const authRouter = Router();
 
-import { signup } from "./signup.js";
+import { signup, signupDemo } from "./signup.js";
 authRouter.post('/signup', signup);
+authRouter.post('/signup/demo', signupDemo)
 
 import { login } from "./login.js";
 authRouter.post('/login', login);

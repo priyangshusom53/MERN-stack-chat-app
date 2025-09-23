@@ -27,3 +27,20 @@ export const signup = async (req, res) => {
 
 
 }
+
+export const signupDemo = async (req, res) => {
+   try {
+      await new Promise((resolve, reject) => {
+         setTimeout(() => { resolve("Request success") }, 2000)
+      })
+      res.cookie('demo-cookie', "demo-cookie-123", {
+         httpOnly: true,
+         secure: false,
+         sameSite: 'strict',
+         maxAge: 24 * 60 * 60 * 1000
+      });
+      res.status(201).json({ message: 'success' })
+   } catch (err) {
+      res.status(500).json({ error: 'Signup demo failed' })
+   }
+}

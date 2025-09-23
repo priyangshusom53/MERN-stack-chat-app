@@ -58,8 +58,11 @@ export default function ChatArea({ messages }) {
             </div>
 
             {/* input section */}
-            <div className="w-[100%] sticky bottom-0 left-0 px-2 md:px-8 flex justify-center items-center">
-               <InputSection />
+            <div className="w-full sticky bottom-0 left-0 px-4  flex justify-center items-center">
+               <div className={cn(`flex-1 mt-auto ${displayStyles.flex_row_center} items-stretch max-w-[40rem] mx-auto `)}>
+                  <InputSection />
+               </div>
+
             </div>
          </div>
 

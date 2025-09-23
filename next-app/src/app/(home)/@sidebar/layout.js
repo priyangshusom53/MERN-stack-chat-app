@@ -1,9 +1,9 @@
 import { Sidebar } from '@/app/_components/sidebar-components/sidebar.js'
 import { SideBarContent } from '@/app/_components/sidebar-components/sidebar-content.js'
-import { SidebarFooter } from '../_components/sidebar-components/sidebar-footer.js'
+import { SidebarFooter } from '../../_components/sidebar-components/sidebar-footer.js'
 
 
-import { Styles } from '../_components/styles.js'
+import { Styles } from '../../_components/styles.js'
 export default function SidebarLayout({
    contacts,
    children

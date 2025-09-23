@@ -1,6 +1,6 @@
-import { SidebarHeader } from "../_components/sidebar-components/sidebar-header.js"
-import { SidebarMenu } from '../_components/sidebar-components/sidebar-menu.js'
-import { SidebarTrigger } from "../_components/sidebar-components/sidebar.js"
+import { SidebarHeader } from "../../_components/sidebar-components/sidebar-header.js"
+import { SidebarMenu } from '../../_components/sidebar-components/sidebar-menu.js'
+import { SidebarTrigger } from "../../_components/sidebar-components/sidebar.js"
 import { SquarePen } from "lucide-react"
 
 
