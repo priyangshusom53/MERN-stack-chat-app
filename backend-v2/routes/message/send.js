@@ -1,6 +1,6 @@
 import { addMessage } from "../../db/models/message.js";
 import { findUserById, findUserByEmail } from "../../db/models/user.js";
-import { dbConnection } from "../../index.js";
+import { db } from "../../index.js";
 
 export const sendMessage = async (req, res) => {
    const data = req.body;
@@ -9,14 +9,14 @@ export const sendMessage = async (req, res) => {
          res.status(400).json({ message: "Insufficient information" });
          return;
       }
-      const sendingUser = await findUserById(dbConnection, data.senderId);
-      const receivingUser = await findUserByEmail(dbConnection, data.receiverEmail);
+      const sendingUser = await findUserById(db, data.senderId);
+      const receivingUser = await findUserByEmail(db, data.receiverEmail);
       const messageData = {
          senderId: sendingUser._id,
          receiverId: receivingUser._id,
          content: data.messageContent
       }
-      await addMessage(dbConnection, messageData);
+      await addMessage(db, messageData);
       res.status(201).json({ message: "Message send successfully" })
    } catch (err) {
       console.log("Error in message route: ", err.message);

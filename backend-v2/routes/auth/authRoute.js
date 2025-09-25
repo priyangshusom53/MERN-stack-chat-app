@@ -6,6 +6,10 @@ import { signup, signupDemo } from "./signup.js";
 authRouter.post('/signup', signup);
 authRouter.post('/signup/demo', signupDemo)
 
+import { checkUser } from "./checkUser.js";
+import { verifyUser } from "../../middlewares/auth.middleware.js";
+authRouter.get('/check-user', verifyUser, checkUser)
+
 import { login } from "./login.js";
 authRouter.post('/login', login);
 

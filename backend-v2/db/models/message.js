@@ -8,36 +8,15 @@ const messageSchema = new mongoose.Schema({
    timestamp: { type: Date, default: Date.now }
 })
 
-
-
-import { useDatabase } from "../dbconfig.js";
-export const bindDBToMessageModel = async (dbConnection, db) => {
-   if (dbConnection.isConnected) {
-      try {
-         db.model("Message", messageSchema, "Messages");
-         console.log(`Message model bound to database: ${dbName}`);
-      } catch (err) {
-         console.log("Error binding Message model to database:", err.message);
-      }
-   } else {
-      console.log("Database not connected. Cannot bind Message model.");
-   }
-}
-
-
-const dbName = "chat-app";
+export const messageCollection = "Messages";
 let Message = null;
-export const setMessageCollection = async (dbConnection, db) => {
-   await bindDBToMessageModel(dbConnection, db);
-   if (Message === null) {
-      Message = db.model("Message");
-   }
+export const setModel = (db) => {
+   Message = db.createCollection('Message', messageSchema, 'Messages')
 }
-export const messageCollection = "Message";
 
 
-export const addMessage = async (dbConn, messageData) => {
-   if (dbConn.isConnected) {
+export const addMessage = async (db, messageData) => {
+   if (db.isConnected) {
       if (messageData?.senderId === null) return new Error("Sender ID is required");
       if (messageData?.receiverId === null) return new Error("Receiver ID is required");
       if (messageData?.content === null) return new Error("Content is required");
@@ -61,8 +40,8 @@ export const addMessage = async (dbConn, messageData) => {
    }
 }
 
-export const findMessagesBetweenUsers = async (dbConn, userId1, userId2) => {
-   if (dbConn.isConnected) {
+export const findMessagesBetweenUsers = async (db, userId1, userId2) => {
+   if (db.isConnected) {
       try {
          const messages = await Message.find({
             $or: [
@@ -81,8 +60,8 @@ export const findMessagesBetweenUsers = async (dbConn, userId1, userId2) => {
    }
 }
 
-export const deleteMessagesBetweenUsers = async (dbConn, userId1, userId2) => {
-   if (dbConn.isConnected) {
+export const deleteMessagesBetweenUsers = async (db, userId1, userId2) => {
+   if (db.isConnected) {
       try {
          const result = await Message.deleteMany({
             $or: [

@@ -1,5 +1,5 @@
 import { findUserById } from "../../db/models/user.js"
-import { dbConnection } from "../../index.js"
+import { db } from "../../index.js"
 import * as jwt from '../../utils/jwt.js'
 
 export const logout = async (req, res) => {
@@ -19,7 +19,7 @@ export const logout = async (req, res) => {
       const token = cookies.sessionId;
       const decoded = jwt.verifyToken(token);
       if (decoded !== null) {
-         const user = await findUserById(dbConnection, decoded.userId)
+         const user = await findUserById(db, decoded.userId)
          res.status(200);
          res.cookie('sessionId', "", {
             httpOnly: true,

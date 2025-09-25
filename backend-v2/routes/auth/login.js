@@ -1,5 +1,5 @@
 import { findUserByEmail, findUserById } from "../../db/models/user.js"
-import { dbConnection } from '../../index.js';
+import { db } from '../../index.js';
 import * as jwt from '../../utils/jwt.js';
 
 
@@ -12,7 +12,7 @@ export const login = async (req, res) => {
          return;
       }
       const email = data.email;
-      const user = await findUserByEmail(dbConnection, email);
+      const user = await findUserByEmail(db, email);
       if (!user) {
          res.status(401).json({ message: 'invalid credentials' })
          return;

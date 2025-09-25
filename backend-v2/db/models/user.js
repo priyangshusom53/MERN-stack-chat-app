@@ -10,40 +10,21 @@ export const userSchema = new mongoose.Schema({
 
 })
 
-
-import { useDatabase } from "../dbconfig.js";
-const bindDBToUserModel = async (dbConnection, db) => {
-   if (dbConnection.isConnected) {
-      try {
-         db.model("User", userSchema, "Users");
-         console.log(`User model bound to database: ${dbName}`);
-      } catch (err) {
-         console.log("Error binding User model to database:", err.message);
-      }
-   } else {
-      console.log("Database not connected. Cannot bind User model.");
-   }
-}
-
-const dbName = "chat-app";
+export const userCollection = "Users";
 let User = null;
-export const setUserCollection = async (dbConnection, db) => {
-   await bindDBToUserModel(dbConnection, db);
-   if (User === null) {
-      User = db.model("User");
-   }
+export const setModel = (db) => {
+   User = db.createCollection('User', userSchema, 'Users')
 }
-export const userCollection = "User";
 
 
-export const addUser = async (dbConn, userData) => {
-   if (dbConn.isConnected) {
+export const addUser = async (db, userData) => {
+   if (db.isConnected) {
       if (userData?.email === null) return new Error("Email is required");
       if (userData?.password === null) return new Error("Password is required");
       if (userData?.name === null) return new Error("Name is required");
 
       // Check if user with the same email already exists
-      if (await findUserByEmail(dbConn, userData.email) !== null) {
+      if (await findUserByEmail(db, userData.email) !== null) {
          return new Error("User with this email already exists");
       }
       // Create a new user instance
@@ -71,8 +52,8 @@ export const addUser = async (dbConn, userData) => {
 
 }
 
-export const findUserById = async (dbConn, Id) => {
-   if (dbConn.isConnected) {
+export const findUserById = async (db, Id) => {
+   if (db.isConnected) {
 
       try {
          const user = await User.findById(Id);
@@ -87,8 +68,8 @@ export const findUserById = async (dbConn, Id) => {
    }
 }
 
-export const findUserByEmail = async (dbConn, email) => {
-   if (dbConn.isConnected) {
+export const findUserByEmail = async (db, email) => {
+   if (db.isConnected) {
       try {
          const user = await User.findOne({ email: email });
          return user;
@@ -102,8 +83,8 @@ export const findUserByEmail = async (dbConn, email) => {
    }
 }
 
-export const userExists = async (dbConn, email) => {
-   if (dbConn.isConnected) {
+export const userExists = async (db, email) => {
+   if (db.isConnected) {
       try {
          const user = await User.findOne({ email: email });
          return user !== null;
@@ -117,8 +98,8 @@ export const userExists = async (dbConn, email) => {
    }
 }
 
-export const validateUserCredentials = async (dbConn, email, password) => {
-   if (dbConn.isConnected) {
+export const validateUserCredentials = async (db, email, password) => {
+   if (db.isConnected) {
       try {
          const user = await User.findOne({ email: email, password: password });
          return user !== null;
@@ -132,8 +113,8 @@ export const validateUserCredentials = async (dbConn, email, password) => {
    }
 }
 
-export const addContact = async (dbConn, userId, contactId) => {
-   if (dbConn.isConnected) {
+export const addContact = async (db, userId, contactId) => {
+   if (db.isConnected) {
       try {
 
          const contact = await User.findById(contactId);
@@ -154,8 +135,8 @@ export const addContact = async (dbConn, userId, contactId) => {
    }
 }
 
-export const getContacts = async (dbConn, userId) => {
-   if (dbConn.isConnected) {
+export const getContacts = async (db, userId) => {
+   if (db.isConnected) {
       try {
          const user = await User.findById(userId).populate('contacts');
          return user.contacts;
@@ -169,8 +150,8 @@ export const getContacts = async (dbConn, userId) => {
    }
 }
 
-export const getUser = async (dbConn, userId) => {
-   if (dbConn.isConnected) {
+export const getUser = async (db, userId) => {
+   if (db.isConnected) {
       try {
          const user = await User.findById(userId);
          return user;
@@ -184,8 +165,8 @@ export const getUser = async (dbConn, userId) => {
    }
 }
 
-export const getUserByEmail = async (dbConn, email) => {
-   if (dbConn.isConnected) {
+export const getUserByEmail = async (db, email) => {
+   if (db.isConnected) {
       try {
          const user = await User.findOne({ email: email });
          return user;
@@ -199,8 +180,8 @@ export const getUserByEmail = async (dbConn, email) => {
    }
 }
 
-export const deleteUser = async (dbConn, userId) => {
-   if (dbConn.isConnected) {
+export const deleteUser = async (db, userId) => {
+   if (db.isConnected) {
       try {
          await User.findByIdAndDelete(userId);
          return true;
@@ -214,8 +195,8 @@ export const deleteUser = async (dbConn, userId) => {
    }
 }
 
-export const updateUser = async (dbConn, userId, updateData) => {
-   if (dbConn.isConnected) {
+export const updateUser = async (db, userId, updateData) => {
+   if (db.isConnected) {
       try {
          const user = await User.findById(userId);
          if (!user) {

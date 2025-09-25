@@ -1,5 +1,5 @@
 import { addUser } from '../../db/models/user.js'
-import { dbConnection } from '../../index.js';
+import { db } from '../../index.js';
 import * as jwt from '../../utils/jwt.js';
 
 export const signup = async (req, res) => {
@@ -11,7 +11,7 @@ export const signup = async (req, res) => {
       avatarUrl: data.avatarUrl ?? ''
    }
    try {
-      const user = await addUser(dbConnection, userData);
+      const user = await addUser(db, userData);
       const token = jwt.generateToken({ userId: user._id }, '1d');
       res.cookie('sessionId', token, {
          httpOnly: true,

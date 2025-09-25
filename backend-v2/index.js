@@ -14,27 +14,22 @@ app.get('/', (req, res) => {
 });
 
 // Database setup
-import { DBConn } from './db/db.js';
+import { DB } from './db/db.js';
 const connectionAddress = process.env.MONGODB_CONNECTION_STRING;
 if (!connectionAddress) throw new Error("No connection string found in .env file");
-export const dbConnection = new DBConn(connectionAddress);
-await dbConnection.connect();
-console.log("DB connection status:", dbConnection.isConnected);
+export const db = new DB(connectionAddress, "chat-app")
+await db.connect()
+
 
 // Database config
-import { dbExists, createDatabase, useDatabase } from './db/dbconfig.js';
-const exists = await dbExists("chat-app");
-if (!exists) {
-   await createDatabase("chat-app");
-}
-const chatAppDB = await useDatabase("chat-app");
+await db.useDB()
+import { setModel as setUserModel } from './db/models/user.js';
+setUserModel(db)
+import { setModel as setMessageModel } from './db/models/message.js';
+setMessageModel(db)
 
 
-import { setUserCollection, addUser, findUserByEmail } from './db/models/user.js';
-await setUserCollection(dbConnection, chatAppDB);
-import { setMessageCollection } from './db/models/message.js';
-await setMessageCollection(dbConnection, chatAppDB);
-
+import { addUser, findUserByEmail } from './db/models/user.js';
 const userData = {
    email: "example@email.com",
    password: "examplePassword",
@@ -42,9 +37,9 @@ const userData = {
    avatarUrl: "http://example.com/avatar.png",
    contacts: []
 }
-const res = await addUser(dbConnection, userData);
+const res = await addUser(db, userData);
 console.log(res);
-const user = await findUserByEmail(dbConnection, userData.email)
+const user = await findUserByEmail(db, userData.email)
 console.log(user);
 
 // Routes setup
