@@ -7,7 +7,7 @@ const txt_level_3 = cn(textStyles.text_h6, "md:text-[length:var(--size-h5)] md:l
 export default function ChatBubble({ message, type }) {
    return (
       <>
-         <div className={cn(`max-w-[70%] md:max-w-[60%] ${bg_fg_color()} px-2 md:px-4 py-2 rounded-lg`, `${(type === 'sent') ? `rounded-br-xs ml-auto ${bg_fg_color('bg-foreground text-background')}` : `rounded-bl-xs ${interaction_color()}`} border`)}>
+         <div className={cn(`max-w-[70%] md:max-w-[60%] ${bg_fg_color()} px-2 md:px-4 py-2 rounded-lg`, `${(type === 'sent') ? `rounded-br-xs ml-auto place-self-end ${bg_fg_color('bg-foreground text-background')}` : `rounded-bl-xs mr-auto place-self-start ${interaction_color()}`} border`)}>
             <div className={cn(`${txt_level_3} break-all line-clamp-none text-wrap wrap-anywhere tracking-tight `)}>
                <span>
                   {message}

@@ -9,78 +9,28 @@ import { Separator } from '@/components/ui/separator.jsx'
 // Placeholder
 import contactImg from '@/../public/contact-avatar.svg'
 
+
+//
+import { useRouter } from 'next/navigation';
+
 export const ContactManager = ({ contacts }) => {
+   const router = useRouter()
+
    return (
       <>
-         <SidebarGroupContent className={''}>
-            <ContactCard
-               styles={{}}
-               imageSrc={contactImg}
-               username={"TAnanlnala"}
-               lastMessage={"llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2 llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2t"}
-            />
+         {contacts?.map((contact, idx) => {
+            return (
+               <SidebarGroupContent className={''} key={idx} onClick={() => { router.push(`/chat?user=${contact.email}`); }}>
+                  <ContactCard
+                     styles={{}}
+                     imageSrc={contactImg}
+                     username={contact.name}
+                     lastMessage={contact.lastMessage}
+                  />
 
-         </SidebarGroupContent>
-         <Separator />
-         <SidebarGroupContent className={''}>
-            <ContactCard
-               styles={{}}
-               imageSrc={contactImg}
-               username={"TAnanlnala"}
-               lastMessage={"llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2 llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2t"}
-            />
-
-         </SidebarGroupContent>
-         <Separator />
-         <SidebarGroupContent className={''}>
-            <ContactCard
-               styles={{}}
-               imageSrc={contactImg}
-               username={"TAnanlnala"}
-               lastMessage={"llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2 llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2t"}
-            />
-
-         </SidebarGroupContent>
-         <Separator />
-         <SidebarGroupContent className={''}>
-            <ContactCard
-               styles={{}}
-               imageSrc={contactImg}
-               username={"TAnanlnala"}
-               lastMessage={"llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2 llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2t"}
-            />
-
-         </SidebarGroupContent>
-         <Separator />
-         <SidebarGroupContent className={''}>
-            <ContactCard
-               styles={{}}
-               imageSrc={contactImg}
-               username={"TAnanlnala"}
-               lastMessage={"llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2 llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2t"}
-            />
-
-         </SidebarGroupContent>
-         <Separator />
-         <SidebarGroupContent className={''}>
-            <ContactCard
-               styles={{}}
-               imageSrc={contactImg}
-               username={"TAnanlnala"}
-               lastMessage={"llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2 llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2t"}
-            />
-
-         </SidebarGroupContent>
-         <Separator />
-         <SidebarGroupContent className={''}>
-            <ContactCard
-               styles={{}}
-               imageSrc={contactImg}
-               username={"TAnanlnala"}
-               lastMessage={"llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2 llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2llannlknl3n 2l 2 2ln62l6nl 36m2'[6k2[k[';k2k6'2t"}
-            />
-
-         </SidebarGroupContent>
+               </SidebarGroupContent>
+            )
+         })}
       </>
    )
 }

@@ -5,8 +5,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 const app = express();
 
+import cookieParser from 'cookie-parser';
 // Middleware setup
 app.use(express.json());
+app.use(cookieParser());
 
 
 app.get('/', (req, res) => {

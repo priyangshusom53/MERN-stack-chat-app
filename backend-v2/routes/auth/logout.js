@@ -35,6 +35,6 @@ export const logout = async (req, res) => {
 
    } catch (err) {
       res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Invalid or expired token" }));
+      res.end(JSON.stringify({ message: "Invalid or expired token" }));
    }
 }

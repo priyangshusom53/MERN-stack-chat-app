@@ -4,14 +4,16 @@ import { db } from "../../index.js";
 
 export const getMessages = async (req, res) => {
    const data = req.body;
+   let limit = req.query.limit ? parseInt(req.query.limit) : 0
+
    try {
-      if (!data.senderId || !data.receiverEmail) {
+      if (!data.senderEmail || !data.receiverEmail) {
          res.status(400).json({ message: "Insufficient information" });
          return;
       }
-      const sendingUser = await findUserById(db, data.senderId);
+      const sendingUser = await findUserByEmail(db, data.senderEmail);
       const recevingUser = await findUserByEmail(db, data.receiverEmail);
-      const messages = await findMessagesBetweenUsers(db, sendingUser._id, recevingUser._id);
+      const messages = await findMessagesBetweenUsers(db, sendingUser._id, recevingUser._id, limit);
       const _messages = messages.map((message) => {
          const type = (message.senderId === sendingUser._id) ? 'sent' : 'received'
          const _message = {
@@ -19,7 +21,7 @@ export const getMessages = async (req, res) => {
          }
          return _message
       })
-      res.status(200).json({ message: "Message fetched successfully", data: _messages })
+      res.status(200).json({ message: "Messages fetched successfully", data: _messages })
    } catch (err) {
       console.log("Error in message route: ", err.message);
       res.status(500).json({ message: "Server error" });

@@ -1,3 +1,4 @@
+'use client';
 import ChatBubble from "./chatbubble"
 
 const _ = null
@@ -62,7 +63,6 @@ export default function ChatArea({ messages }) {
                <div className={cn(`flex-1 mt-auto ${displayStyles.flex_row_center} items-stretch max-w-[40rem] mx-auto `)}>
                   <InputSection />
                </div>
-
             </div>
          </div>
 
@@ -78,7 +78,7 @@ import { displayStyles, textStyles, h_lvl_2_3, bg_fg_color, interaction_color, S
 const txt_level_2 = cn(textStyles.text_h5, "md:text-[length:var(--size-h4)] md:leading-[length:calc(1.3*var(--size-h4))]")
 const txt_level_3 = cn(textStyles.text_h6, "md:text-[length:var(--size-h5)] md:leading-[length:calc(1.4*var(--size-h5))]")
 import Image from "next/image";
-function ContactHeader({ contactImage, contactName, contactId }) {
+export function ContactHeader({ contactImage, contactName, contactId }) {
    const styles = new Styles()
       .m('0.5rem', '0.5rem', 0, 0)
       .build()
@@ -112,13 +112,37 @@ function ContactHeader({ contactImage, contactName, contactId }) {
 import { Input } from "@/components/ui/input";
 import { SendHorizontal } from 'lucide-react';
 import { Button } from "@/components/ui/button"
-function InputSection() {
+
+import { useState } from "react";
+export function InputSection({ onSend }) {
+   const [text, setText] = useState("");
+   const [isSending, setIsSending] = useState(false)
+
+   async function handleSend() {
+      if (!text.trim()) return
+
+      setIsSending(true);
+      try {
+         await onSend(text); // call server action or API
+         setText(""); // clear input on success
+      } catch (err) {
+         console.error("Failed to send message", err);
+      } finally {
+         setIsSending(false); // re-enable button
+      }
+   }
+
    return (<>
       <div className="w-full mt-[length:calc(0.6*var(--size-h4))] md:mt-[length:calc(0.6*var(--size-h3))] mb-[length:calc(0.6*var(--size-h4))] md:mb-[length:calc(0.6*var(--size-h3))] flex justify-start items-start ">
          <div className="relative w-[100%] h-[length:calc(2*var(--size-h6))] md:h-[length:calc(2*var(--size-h5))] flex justify-center items-center">
-            <Input className="w-full h-full text-(length:--size-h6) md:text-(length:--size-h5) flex justify-center items-center rounded-xs " placeholder="Type your message..." />
+            <Input className="w-full h-full text-(length:--size-h6) md:text-(length:--size-h5) flex justify-center items-center rounded-xs "
+               placeholder="Type your message..."
+               value={text}
+               onChange={(e) => { setText(e.target.value) }} />
             <div className="absolute right-2 top-[10%] bottom-[10%] h-[80%] aspect-square rounded-full flex flex-row justify-center items-center">
-               <Button variant={'outline'} size={"icon"} className="w-full h-full box-border aspect-square rounded-full flex justify-center items-center dark">
+               <Button variant={'outline'} size={"icon"} className="w-full h-full box-border aspect-square rounded-full flex justify-center items-center dark"
+                  onClick={handleSend}
+                  disabled={text.trim() === '' || isSending ? true : false}>
                   <div className="w-[80%] h-[80%] flex justify-center items-center"><SendHorizontal className="w-[100%] max-h-[100%] text-white" /></div>
                </Button>
             </div>

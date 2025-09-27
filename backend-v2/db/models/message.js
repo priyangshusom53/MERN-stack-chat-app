@@ -40,7 +40,7 @@ export const addMessage = async (db, messageData) => {
    }
 }
 
-export const findMessagesBetweenUsers = async (db, userId1, userId2) => {
+export const findMessagesBetweenUsers = async (db, userId1, userId2, limit) => {
    if (db.isConnected) {
       try {
          const messages = await Message.find({
@@ -48,7 +48,7 @@ export const findMessagesBetweenUsers = async (db, userId1, userId2) => {
                { senderId: userId1, receiverId: userId2 },
                { senderId: userId2, receiverId: userId1 }
             ]
-         }).sort({ timestamp: 1 });
+         }).sort({ timestamp: 1 }).limit(limit);
          return messages;
       } catch (err) {
          console.log("Error finding messages between users:", err.message);

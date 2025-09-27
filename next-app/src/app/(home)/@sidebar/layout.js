@@ -5,8 +5,8 @@ import { SidebarFooter } from '../../_components/sidebar-components/sidebar-foot
 
 import { Styles } from '../../_components/styles.js'
 export default function SidebarLayout({
-   contacts,
-   children
+   children,
+   contacts
 }) {
 
    const styles = new Styles()

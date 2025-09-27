@@ -5,7 +5,7 @@ export const userSchema = new mongoose.Schema({
    password: { type: String, required: true },
    name: { type: String, required: true },
    avatarUrl: { type: String },
-   contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+   contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true }],
    createdAt: { type: Date, default: Date.now, immutable: true },
 
 })
@@ -116,15 +116,19 @@ export const validateUserCredentials = async (db, email, password) => {
 export const addContact = async (db, userId, contactId) => {
    if (db.isConnected) {
       try {
-
-         const contact = await User.findById(contactId);
-         if (!contact) {
-            return new Error("Contact not found");
-         }
          const user = await User.findById(userId);
-         user.contacts.push(contact._id);
-         await user.save();
-         return user;
+         const contacts = user.contacts
+         if (contacts.includes(contactId)) {
+            return new Error("Contact already added")
+         } else {
+            const contact = await User.findById(contactId);
+            if (!contact) {
+               return new Error("Contact not found");
+            }
+            user.contacts.push(contact._id);
+            await user.save();
+            return user;
+         }
       } catch (err) {
          console.log("Error adding contact:", err.message);
          return new Error("Error adding contact");

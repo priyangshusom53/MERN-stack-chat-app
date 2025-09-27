@@ -35,6 +35,6 @@ export const login = async (req, res) => {
    } catch (err) {
       console.log("Error in login route: ", err.message);
       res.writeHead(500, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Server error" }));
+      res.end(JSON.stringify({ message: "Server error" }));
    }
 }

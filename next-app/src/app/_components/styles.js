@@ -1,11 +1,17 @@
 import { cn } from "@/lib/utils";
 
-export class Styles {
+export class Styles extends Object {
    constructor() {
-
+      super()
    }
    build() {
-      return { ...this }
+      const plain = {};
+      for (const key in this) {
+         if (Object.hasOwn(this, key)) {
+            plain[key] = this[key];
+         }
+      }
+      return plain;
    }
    addProps(props) {
       for (let key in props) {

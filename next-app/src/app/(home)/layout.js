@@ -1,5 +1,10 @@
 import '../globals.css';
 
+// Protect this route
+import { isUserValidAction } from '../server/validateUser.js';
+import { redirect } from 'next/navigation';
+
+
 import { SidebarContextProvider } from '../_components/sidebar-components/sidebar.js'
 
 import { SetDisplayVars } from '../_utils/displayinfo.js';
@@ -14,10 +19,16 @@ import HomePageContainer from '../_components/homepagecontainer'
 // Shadcn Sonner to display notification
 import { Toaster } from "@/components/ui/sonner"
 
-export default function HomeLayout({ children,
+export default async function HomeLayout({ children,
   chatArea,
   sidebar
 }) {
+
+  const res = await isUserValidAction()
+  if (res === false) {
+    redirect('/login')
+  }
+
   return (
     <html lang="en" className='m-0 w-full h-full '>
 

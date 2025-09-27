@@ -10,10 +10,11 @@ export const SidebarGroup = ({ children, className }) => {
 }
 
 
-export const SidebarGroupContent = ({ children, className }) => {
+export const SidebarGroupContent = ({ children, className, ...props }) => {
 
    return (
-      <div className={cn(`sidebar-group-content w-full p-0 ${displayStyles.flex_row_center} shrink-0 overflow-hidden bg-background hover:bg-accent-background`, className)}>
+      <div className={cn(`sidebar-group-content w-full p-0 ${displayStyles.flex_row_center} shrink-0 overflow-hidden bg-background hover:bg-accent-background`, className)}
+         {...props}>
          {children}
       </div>)
 }

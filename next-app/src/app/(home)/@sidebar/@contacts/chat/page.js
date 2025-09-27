@@ -1,4 +1,3 @@
-
 // check user status and retrieve user
 import { isUserValidAction } from '@/app/server/validateUser.js'
 
@@ -7,9 +6,12 @@ import { SidebarLabel } from '@/app/_components/sidebar-components/sidebar-label
 import { Input } from '@/components/ui/input.jsx'
 
 
-import { ContactManager } from './contactManager.js'
+import { ContactManager } from '../contactManager.js'
 import { Styles } from '@/app/_components/styles.js'
-export default async function Contacts() {
+export default async function Contacts({ searchParams }) {
+   const { user } = await searchParams
+   console.log(user)
+   console.log('@contacts default route running')
    let contacts = null
    const res = await isUserValidAction()
    if (res !== false) {
@@ -62,8 +64,3 @@ export default async function Contacts() {
       </>
    )
 }
-
-
-// export async function getServerSideProps(context) {
-
-// }
