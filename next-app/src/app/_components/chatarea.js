@@ -83,24 +83,31 @@ export function ContactHeader({ contactImage, contactName, contactId }) {
       .m('0.5rem', '0.5rem', 0, 0)
       .build()
    return (<>
-      <div className={cn(`w-full flex flex-row justify-start items-center mr-auto ${bg_fg_color()} `)}
-         style={styles}
+      <div className={cn(`w-full h-auto my-auto flex flex-row justify-start items-center mr-auto ${bg_fg_color()} `)}
       >
-         <div className="w-full flex flex-row justify-start items-center gap-x-[length:calc(0.2*var(--size-h6))] md:gap-x-[length:calc(0.6*var(--size-h6))] ">
-            <div className="h-[100%] aspect-square flex flex-col justify-center items-center shrink-0 place-self-start">
-               <div className="w-full h-full rounded-full overflow-hidden flex justify-center items-center">
-                  <Image
-                     src={contactImage}
-                     alt={`${contactName}'s avatar`}
-                     width={0}
-                     height={0}
-                     className="object-cover h-full w-full"
-                  />
-               </div>
+         <div className="w-full h-auto flex flex-row justify-start items-center gap-x-[8px]">
+            <div className="h-full mb-auto rounded-full overflow-hidden shrink-0 flex flex-col justify-start items-start">
+               <Image
+                  src={contactImage}
+                  alt={`${contactName}'s avatar`}
+                  width={0}
+                  height={0}
+                  className="object-cover h-[24px] w-[24px]"
+               />
             </div>
-            <div className="flex flex-col justify-center items-start">
-               <div className={cn(textStyles.text_h5, 'leading-none h-[length:calc(1*var(--size-h5))]  md:h-[length:calc(1*var(--size-h4))]', displayStyles.flex_row_start_center)}><span>{contactName}</span></div>
-               <div className={textStyles.text_h6}><span>{contactId}</span></div>
+            <div className="h-auto flex flex-col justify-center items-start">
+               <div className={'w-full h-auto flex flex-col justify-start items-start'}>
+                  <div className={cn(displayStyles.flex_col_start_center, textStyles.text_primary, 'overflow-hidden')}>
+                     <span className="">
+                        {contactName}
+                     </span>
+                  </div>
+               </div>
+               <div className={`${textStyles.text_secondary} ${displayStyles.flex_col_start_center}`}>
+                  <span>
+                     {contactId}
+                  </span>
+               </div>
             </div>
 
          </div>

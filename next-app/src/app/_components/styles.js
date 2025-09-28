@@ -33,7 +33,10 @@ export const textStyles = {
    text_h4: "text-(length:--size-h4) leading-[length:calc(1.3*var(--size-h4))]",
    text_h5: "text-(length:--size-h5) leading-[length:calc(1.4*var(--size-h5))]",
    text_h6: "text-(length:--size-h6) leading-[length:calc(1.5*var(--size-h6))]",
-   text_color: "text-foreground"
+   text_color: "text-foreground",
+   text_header: "text-2xl font-normal",
+   text_primary: "text-sm leading-[1.2] tracking-[-4%] text-black font-medium",
+   text_secondary: "text-xs text-[#626262] font-normal"
 }
 
 export const txt_level_2 = cn(textStyles.text_h5, "md:text-[length:var(--size-h4)] md:leading-[length:calc(1.3*var(--size-h4))]")
@@ -71,6 +74,12 @@ export const displayStyles = {
 }
 
 /* Region Size */
+
+export const iconSizes = {
+   icon_primary: 'w-[24px] h-[24px]',
+   primary_background: 'w-[30px] h-[30px]',
+   icon_secondary: 'w-[20px] h-[20px]',
+}
 
 /*----h2 sizes---- */
 export function square_h2(additionalStyles) {
@@ -134,7 +143,7 @@ export function bg_fg_color(overwrite) {
 
 /* Region Interation */
 export function interaction_color(group = false, children = false, overwrite) {
-   return cn(` ${group ? 'group-hover:bg-accent group-hover:text-accent-foreground focus: group-active:bg-accent group-active:text-accent-foreground group-disabled:opacity-50' : 'hover:bg-accent hover:text-accent-foreground focus: active:bg-accent active:text-accent-foreground disabled:opacity-50'}`, `${children ? 'hover:**:bg-accent hover:**:text-accent-foreground active:**:bg-accent active:**:text-accent-foreground disabled:**:opacity-50' : ''}`, overwrite)
+   return cn(` ${group ? 'group-hover:bg-accent group-hover:text-accent-foreground focus: group-active:bg-accent group-active:text-accent-foreground group-disabled:opacity-50' : 'hover:bg-accent hover:text-accent-foreground focus: active:bg-accent active:text-accent-foreground disabled:opacity-50'}`, `${children ? 'hover:**:bg-accent  active:**:bg-accent disabled:**:opacity-50' : ''}`, overwrite)
 }
 
 

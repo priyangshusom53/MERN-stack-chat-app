@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input.jsx'
 
 
 import { ContactManager } from './contactManager.js'
-import { Styles } from '@/app/_components/styles.js'
+import { Styles, textStyles } from '@/app/_components/styles.js'
 export default async function Contacts() {
    let contacts = null
    const res = await isUserValidAction()
@@ -37,10 +37,10 @@ export default async function Contacts() {
 
    return (
       <>
-         <SidebarGroup className={'relative '}>
+         <SidebarGroup className={'relative gap-[4px]'}>
             <SidebarLabel>
-               <div className="h-[length:var(--size-h4)] md:h-(length:--size-h3) ">
-                  <h1 className="text-(length:--size-h4) md:text-(length:--size-h3) leading-(length:--size-h4)  md:leading-(length:--size-h3) text-[#a3a3a3] ">Chats</h1>
+               <div className="h-[30px] px-[6px] flex flex-col justify-center items-center">
+                  <h2 className={`${textStyles.text_header}`}>Chats</h2>
                   {
                      // here font actual height = 1.5 * font height
                      // Image is a replaced element
@@ -50,10 +50,8 @@ export default async function Contacts() {
                </div>
             </SidebarLabel>
             <SidebarLabel>
-               <div className="w-full ">
-                  <div className=" flex justify-center items-center">
-                     <Input type="search" placeholder="Search" className={"rounded-xs h-(length:--size-h3) text-[length:calc(var(--size-h3)*0.4)] md:h-(length:--size-h2) md:text-[length:calc(var(--size-h2)*0.4)] "} />
-                  </div>
+               <div className="w-full flex justify-center items-center">
+                  <input type="search" placeholder="Search" className={`${textStyles.text_secondary} w-full h-[30px] px-[6px] rounded-[8px] border outline-none`} />
                </div>
             </SidebarLabel>
             {/* contact list */}

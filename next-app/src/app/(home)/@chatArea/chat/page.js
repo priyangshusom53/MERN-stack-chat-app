@@ -31,7 +31,7 @@ export default async function ChatMessages({ searchParams }) {
    return (
       <div className={cn(`flex-1 w-full px-4 ${displayStyles.flex_col_center} justify-start overflow-auto scrollbar-style  items-center`)}>
          <div className={cn(`place-self-end mt-auto py-4 ${displayStyles.flex_col_center} w-full justify-end max-w-[40rem] mx-auto gap-[length:var(--size-h4)] `)}>
-            {messages.map((message, idx) => {
+            {messages?.map((message, idx) => {
                return <ChatBubble type={message.type} message={message.content} key={idx} />
             })}
          </div>

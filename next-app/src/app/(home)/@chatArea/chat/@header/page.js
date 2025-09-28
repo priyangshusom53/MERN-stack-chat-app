@@ -37,7 +37,7 @@ export default async function Header({ searchParams }) {
    }
 
    return (
-      <div className={`w-[100%] sticky top-0 left-0 px-2 md:px-8  flex flex-row justify-start items-center ${interaction_color(false, true)} border-b-[0.5px]`}>
+      <div className={`w-[100%] h-[48px] sticky top-0 left-0 pl-[24px] flex flex-row justify-start items-center ${interaction_color(false, true)} border-b-[0.5px]`}>
          <ContactHeader
             contactImage={contactImage}
             contactName={contactName}

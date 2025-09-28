@@ -4,7 +4,7 @@ import { displayStyles } from "../styles";
 export const SidebarGroup = ({ children, className }) => {
 
    return (
-      <div className={cn(`sidebar-group w-full flex-1 ${displayStyles.flex_col_start_center} overflow-scroll scrollbar-style bg-background group`, className)}>
+      <div className={cn(`sidebar-group w-full flex-1 ${displayStyles.flex_col_start_center} overflow-auto scrollbar-style group`, className)}>
          {children}
       </div>)
 }

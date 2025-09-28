@@ -3,17 +3,23 @@ import { SidebarMenu } from '../../_components/sidebar-components/sidebar-menu.j
 import { SidebarTrigger } from "../../_components/sidebar-components/sidebar.js"
 import { SquarePen } from "lucide-react"
 
+
+//styles
+import { textStyles } from "@/app/_components/styles.js"
 export default function Sidebar() {
    return (
       <>
-         <SidebarHeader className={'mr-auto justify-center'}
-            icononly={<SidebarTrigger className={`w-8 h-8 aspect-square rounded-xs hover:bg-gray-200 flex justify-center items-center group`} />}
+         <SidebarHeader className={''}
+            icononly={<SidebarTrigger className={`aspect-square rounded-[8px] flex justify-center items-center group`} />}
          />
          <SidebarMenu
             icononly={
-               <div className='w-8 h-8 aspect-square flex justify-center items-center rounded-xs'><SquarePen className='w-[length:calc(2*16*0.8)] h-[length:calc(2*16*0.8)] shrink-0' /></div>}
+               <div className='size-[30px] aspect-square flex justify-center items-center rounded-[8px]'>
+                  <SquarePen className='size-[20px] shrink-0' />
+               </div>}
+            className={`${textStyles.text_secondary} text-foreground h-[30px] rounded-[8px]`}
          >
-            <div className='leading-4'>Edit Icon</div>
+            <div className={`${textStyles.text_secondary}`}>Add Contact</div>
          </SidebarMenu>
       </>
    )

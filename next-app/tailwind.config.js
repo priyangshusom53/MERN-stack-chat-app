@@ -3,6 +3,10 @@ module.exports = {
    content: ["./src/**/*.{js,ts,jsx,tsx,html}"],
    theme: {
       extend: {
+         fontFamily: {
+            inter: ["var(--font-inter)"],
+         },
+
          // spacing: {
          //    '0.75rem': 'var(--size-0-75rem)',
          //    '1rem': 'var(--size-1rem)',

@@ -1,5 +1,25 @@
 import '../globals.css';
 
+// fonts
+import localFont from "next/font/local";
+const myFont = localFont({
+  src: [
+    {
+      path: '../../../public/fonts/inter/Inter-Regular.woff2',
+      weight: '400',
+      style: 'normal'
+    },
+    {
+      path: '../../../public/fonts/inter/Inter-Medium.woff2',
+      weight: '500',
+      style: 'normal'
+    },
+  ],
+  display: "swap",   // optional, avoids layout shift
+  variable: "--font-inter" // optional, for Tailwind usage
+});
+
+
 // Protect this route
 import { isUserValidAction } from '../server/validateUser.js';
 import { redirect } from 'next/navigation';
@@ -18,7 +38,6 @@ import HomePageContainer from '../_components/homepagecontainer'
 
 // Shadcn Sonner to display notification
 import { Toaster } from "@/components/ui/sonner"
-
 export default async function HomeLayout({ children,
   chatArea,
   sidebar
@@ -30,7 +49,7 @@ export default async function HomeLayout({ children,
   }
 
   return (
-    <html lang="en" className='m-0 w-full h-full '>
+    <html lang="en" className='m-0 w-full h-full font-inter'>
 
       <body className='m-0 w-full h-full flex flex-row justify-center items-center'>
 

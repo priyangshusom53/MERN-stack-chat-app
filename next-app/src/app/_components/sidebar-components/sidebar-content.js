@@ -7,7 +7,7 @@ export function SideBarContent({
    children,
 }) {
    return (<>
-      <div className={cn('sidebar-content w-full flex-1 scrollbar-style flex flex-col overflow-scroll group-data-[state=collapsed]:[display:none]', className)}>
+      <div className={cn('sidebar-content w-full flex-1 scrollbar-style flex flex-col overflow-auto group-data-[state=collapsed]:[display:none]', className)}>
          {children}
       </div>
    </>)
