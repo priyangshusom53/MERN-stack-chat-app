@@ -18,7 +18,7 @@ export default function SidebarLayout({
 
    return (
       <div className='w-auto h-full flex flex-col justify-between items-center border-r-[0.5px] '>
-         <Sidebar position={'vertical'} expandedWidth={'240px'} className={' h-full w-full px-[9px] pt-[9px] pb-[16px] justify-start grow'}>
+         <Sidebar position={'vertical'} expandedWidth={'240px'} className={' h-full w-full px-[9px] pt-[6px] pb-[16px] justify-start'}>
             {children}
             <SideBarContent className={'relative w-[100%]'}>
                {contacts}

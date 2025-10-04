@@ -45,7 +45,7 @@ export const Sidebar = ({ children, width, expandedWidth, height, position, clas
    const isVertical = (position === 'vertical') ? true : false
 
    return (
-      <div data-state={state} className={` ${(isVertical) ? `h-[${height ?? '100%'}] w-auto ${open ? `w-[${expandedWidth}]` : 'w-auto'}` : `w-[${width ?? '100%'}] h-auto`} shrink-0 ${displayStyles.flex_row_center} group peer`}
+      <div data-state={state} className={cn(` ${(isVertical) ? `h-[${height ?? '100%'}] w-full ${open ? `w-[${expandedWidth}]` : 'w-auto'}` : `w-[${width ?? '100%'}] h-auto`} shrink-0 ${displayStyles.flex_col_center} h-full group peer`)}
          style={{
             width: `${open ? expandedWidth ?? 'auto' : 'auto'}`
          }}>

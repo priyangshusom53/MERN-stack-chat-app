@@ -1,4 +1,4 @@
-import { InputSection } from "@/app/_components/chatarea.js"
+import { InputSection } from "@/app/_components/chatinput.js"
 
 import { cn } from "@/lib/utils"
 import { displayStyles } from "@/app/_components/styles.js"
@@ -10,6 +10,7 @@ import { isUserValidAction } from "@/app/server/validateUser.js"
 export default async function Input({ searchParams }) {
 
    const thisUser = await isUserValidAction()
+   const { user: contactUserEmail } = await searchParams
 
    async function onSendAction(text) {
       'use server';
@@ -46,7 +47,7 @@ export default async function Input({ searchParams }) {
             }
          }
       } catch (err) {
-         console.log('Error in @input/page.js in onSend Action: ', err.message)
+         console.error('Error in @input/page.js in onSend Action: ', err.message)
       }
 
    }
@@ -54,7 +55,7 @@ export default async function Input({ searchParams }) {
    return (
       <div className="w-full sticky bottom-0 left-0 px-4  flex justify-center items-center">
 
-         <div className={cn(`flex-1 mt-auto ${displayStyles.flex_row_center} items-stretch max-w-[40rem] mx-auto `)}>
+         <div className={cn(`flex-1 mt-auto ${displayStyles.flex_row_center} items-stretch h-[48px] max-w-[40rem] mx-auto `)}>
             <InputSection onSend={onSendAction} />
          </div>
       </div>

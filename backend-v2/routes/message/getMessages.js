@@ -15,9 +15,10 @@ export const getMessages = async (req, res) => {
       const recevingUser = await findUserByEmail(db, data.receiverEmail);
       const messages = await findMessagesBetweenUsers(db, sendingUser._id, recevingUser._id, limit);
       const _messages = messages.map((message) => {
-         const type = (message.senderId === sendingUser._id) ? 'sent' : 'received'
+         const type = (message.senderId.toString() === sendingUser._id.toString()) ? 'sent' : 'received'
+
          const _message = {
-            type, content: message.content, timestamp: message.timestamp
+            type: type, content: message.content, timestamp: message.timestamp
          }
          return _message
       })

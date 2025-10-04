@@ -1,14 +1,77 @@
-import express from 'express';
 import dotenv from 'dotenv';
+import express from 'express';
+import { createServer } from 'node:http'
+import { Server } from 'socket.io';
+
 
 
 dotenv.config();
 const app = express();
 
-import cookieParser from 'cookie-parser';
+
 // Middleware setup
+import cors from 'cors'
+
+const corsOptions = {
+   origin: 'http://192.168.0.103:3000', // Replace with your client's origin
+   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+   credentials: true
+};
+app.use(cors(corsOptions))
 app.use(express.json());
+import cookieParser from 'cookie-parser';
 app.use(cookieParser());
+
+
+// socket.io and http server
+const server = createServer(app)
+const io = new Server(server, { cors: corsOptions })
+
+// Socket io setup
+const onlineUsers = new Map();
+io.on('connection', (socket) => {
+   const email = socket.handshake.auth.email;
+   if (email) {
+      // A user may have multiple tabs, so store all socket ids
+      if (!onlineUsers.has(email)) {
+         onlineUsers.set(email, []);
+      }
+      onlineUsers.get(email).push(socket.id);
+   }
+
+   console.log(`${email} connected with socket ${socket.id}`);
+
+   socket.on("disconnect", () => {
+      if (email && onlineUsers.has(email)) {
+         onlineUsers.set(
+            email,
+            onlineUsers.get(email).filter(id => id !== socket.id)
+         );
+         if (onlineUsers.get(email).length === 0) {
+            onlineUsers.delete(email);
+         }
+      }
+      console.log(`${email} disconnected with socket: ${socket.id}`);
+   });
+
+   // message handler
+   socket.on("message", (text, to) => {
+      const from = socket.handshake.auth.email;
+
+      console.log(`Message from ${from} to ${to}: ${text}`);
+
+      // Send back to sender (chat echo)
+      io.to(socket.id).emit("message", text, from, to);
+
+      // Send to receiver if online
+      if (onlineUsers.has(to)) {
+         for (const socketId of onlineUsers.get(to)) {
+            io.to(socketId).emit("message", text, from, to);
+         }
+      }
+   });
+})
+
 
 
 app.get('/', (req, res) => {
@@ -51,6 +114,6 @@ import { messageRouter } from './routes/message/messageRoute.js';
 app.use('/message', messageRouter);
 
 
-app.listen(8000, () => {
+server.listen(8000, () => {
    console.log('Server is running on http://localhost:8000');
 })

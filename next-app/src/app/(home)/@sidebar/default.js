@@ -1,11 +1,15 @@
 import { SidebarHeader } from "../../_components/sidebar-components/sidebar-header.js"
 import { SidebarMenu } from '../../_components/sidebar-components/sidebar-menu.js'
 import { SidebarTrigger } from "../../_components/sidebar-components/sidebar.js"
-import { SquarePen } from "lucide-react"
-
+import { UserRoundPlus } from 'lucide-react';
+import { UsersRound } from 'lucide-react'
 
 //styles
 import { textStyles } from "@/app/_components/styles.js"
+import Image from "next/image.js";
+
+// ai logo
+import { AiLogoDeactivated } from '@/../public/ai-logo-deactivated.js'
 export default function Sidebar() {
    return (
       <>
@@ -15,11 +19,30 @@ export default function Sidebar() {
          <SidebarMenu
             icononly={
                <div className='size-[30px] aspect-square flex justify-center items-center rounded-[8px]'>
-                  <SquarePen className='size-[20px] shrink-0' />
+                  <UserRoundPlus className='size-[20px] shrink-0' />
                </div>}
             className={`${textStyles.text_secondary} text-foreground h-[30px] rounded-[8px]`}
          >
             <div className={`${textStyles.text_secondary}`}>Add Contact</div>
+         </SidebarMenu>
+         <SidebarMenu
+            icononly={
+               <div className='size-[30px] aspect-square flex justify-center items-center rounded-[8px]'>
+                  <UsersRound className='size-[20px] shrink-0' />
+               </div>}
+            className={`${textStyles.text_secondary} text-foreground h-[30px] rounded-[8px]`}
+         >
+            <div className={`${textStyles.text_secondary}`}>Add Groups</div>
+         </SidebarMenu>
+         <SidebarMenu
+            icononly={
+               <div className='size-[30px] aspect-square flex justify-center items-center rounded-[8px]'>
+                  <AiLogoDeactivated
+                     className='size-[20px] shrink-0 text-[#323232]' />
+               </div>}
+            className={`${textStyles.text_secondary} text-foreground h-[30px] rounded-[8px]`}
+         >
+            <div className={`${textStyles.text_secondary}`}>Chat with AI</div>
          </SidebarMenu>
       </>
    )

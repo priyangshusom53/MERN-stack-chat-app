@@ -11,15 +11,15 @@ import { ContactManager } from '../contactManager.js'
 // styles
 import { Styles, textStyles } from '@/app/_components/styles.js'
 export default async function Contacts({ searchParams }) {
-   const { user } = await searchParams
-   console.log(user)
+   const { user: contactUser } = await searchParams
+   console.log(contactUser)
    console.log('@contacts default route running')
    let contacts = null
    const res = await isUserValidAction()
    if (res !== false) {
-      const user = res.user
+      const authUser = res.user
       try {
-         const getContactsRes = await fetch(`http://localhost:8000/message/contacts/${user.email}`, {
+         const getContactsRes = await fetch(`http://localhost:8000/message/contacts/${authUser.email}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             cache: 'no-store'
@@ -59,7 +59,7 @@ export default async function Contacts({ searchParams }) {
                </div>
             </SidebarLabel>
             {/* contact list */}
-            <ContactManager contacts={contacts} />
+            <ContactManager contacts={contacts} selectedContact={contactUser} />
          </SidebarGroup>
       </>
    )

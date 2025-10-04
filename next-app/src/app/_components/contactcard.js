@@ -1,21 +1,16 @@
+'use client';
 
 // components/ContactCard.jsx
 import Image from "next/image";
 
-const maxFontSize = {
-   "h": "--size-h4",
-   "md:": "--size-h3"
-}
 import { cn } from "@/lib/utils";
 import { textStyles, iconSizes, bg_fg_color, interaction_color, displayStyles } from "./styles";
 
-const txt_level_2 = cn(textStyles.text_h5, "md:text-[length:var(--size-h4)] md:leading-[length:calc(1.3*var(--size-h4))]")
-const txt_level_3 = cn(textStyles.text_h6, "md:text-[length:var(--size-h5)] md:leading-[length:calc(1.4*var(--size-h5))]")
 
-export default function ContactCard({ imageSrc, status, username, lastMessage, className }) {
+export default function ContactCard({ imageSrc, status, username, lastMessage, className, ...props }) {
    return (
       <div
-         className={`@container w-full h-[48px] rounded-[8px] ${bg_fg_color()} ${interaction_color()} flex flex-row justify-start items-stretch ${textStyles.text_color}`}
+         className={cn(`@container w-full h-[48px] rounded-[8px] ${bg_fg_color()} ${interaction_color()} flex flex-row justify-start items-stretch ${textStyles.text_color}`, className)} {...props}
       >
          {/* status
          <div className="w-[0%] md:w-[0%]  bg-green-300"></div> */}

@@ -1,5 +1,9 @@
 import '../globals.css';
 
+// ClientContextProvider component for client session management
+import { ClientContextProvider } from './client';
+
+
 // fonts
 import localFont from "next/font/local";
 const myFont = localFont({
@@ -24,7 +28,7 @@ const myFont = localFont({
 import { isUserValidAction } from '../server/validateUser.js';
 import { redirect } from 'next/navigation';
 
-
+// context for sidebar 
 import { SidebarContextProvider } from '../_components/sidebar-components/sidebar.js'
 
 import { SetDisplayVars } from '../_utils/displayinfo.js';
@@ -38,10 +42,8 @@ import HomePageContainer from '../_components/homepagecontainer'
 
 // Shadcn Sonner to display notification
 import { Toaster } from "@/components/ui/sonner"
-export default async function HomeLayout({ children,
-  chatArea,
-  sidebar
-}) {
+
+export default async function HomeLayout({ children, chatArea, sidebar }) {
 
   const res = await isUserValidAction()
   if (res === false) {
@@ -55,23 +57,24 @@ export default async function HomeLayout({ children,
 
         <SidebarContextProvider >
 
+          <ClientContextProvider authUser={res.user.email}>
 
-          <main className='box-border p-0 m-0 h-full w-full flex justify-center items-center shrink '>
+            <main className='box-border p-0 m-0 h-full w-full flex justify-center items-center shrink '>
 
-            <div className="w-full h-full box-border p-0 m-0 border-0 flex justify-center items-center  bg-background text-foreground">
-              <HomePageContainer>
+              <div className="w-full h-full box-border p-0 m-0 border-0 flex justify-center items-center  bg-background text-foreground">
+                <HomePageContainer>
 
-                <div className="h-full shrink-0 flex flex-col justify-center items-center">
-                  {sidebar}
-                </div>
-                <div className="flex-1 shrink w-full h-full ">{chatArea}
-                </div>
+                  <div className="h-full shrink-0 flex flex-col justify-center items-center">
+                    {sidebar}
+                  </div>
+                  <div className="flex-1 shrink w-full h-full ">{chatArea}
+                  </div>
 
-              </HomePageContainer>
-            </div>
+                </HomePageContainer>
+              </div>
 
-          </main>
-
+            </main>
+          </ClientContextProvider>
         </SidebarContextProvider>
         <Toaster position="top-center" />
       </body>

@@ -4,13 +4,14 @@ import { cn } from "@/lib/utils.js"
 import { displayStyles } from "@/app/_components/styles.js"
 import ChatBubble from '@/app/_components/chatbubble.js'
 
+import { MessageManager } from "./messageManager.js"
+
 export default async function ChatMessages({ searchParams }) {
 
    let messages = null
    try {
       const thisUser = await isUserValidAction()
       if (thisUser !== false) {
-
          const { user: contactUser } = await searchParams
          if (contactUser !== null) {
             const res = await fetch("http://localhost:8000/message/messages", {
@@ -26,16 +27,40 @@ export default async function ChatMessages({ searchParams }) {
          }
       }
    } catch (err) {
-      console.log(err.message)
+      console.error('Error in @chatArea/chat: ', err.message)
    }
+
+   // server action to fetch messages from client
+   const getMessagesAction = async (contactUser) => {
+      'use server';
+      let messages = null
+      try {
+         const authUser = await isUserValidAction()
+         if (authUser !== false) {
+            if (contactUser !== null) {
+               const res = await fetch("http://localhost:8000/message/messages", {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ senderEmail: authUser.user.email, receiverEmail: contactUser }),
+                  cache: 'no-store'
+               })
+               if (res.ok) {
+                  const data = await res.json()
+                  messages = data.data
+                  return { status: 'success', data: messages }
+               }
+            }
+         }
+      } catch (err) {
+         console.error('Error in @chatArea/chat: ', err.message)
+         return { status: 'failed' }
+      }
+   }
+
    return (
-      <div className={cn(`flex-1 w-full px-4 ${displayStyles.flex_col_center} justify-start overflow-auto scrollbar-style  items-center`)}>
-         <div className={cn(`place-self-end mt-auto py-4 ${displayStyles.flex_col_center} w-full justify-end max-w-[40rem] mx-auto gap-[length:var(--size-h4)] `)}>
-            {messages?.map((message, idx) => {
-               return <ChatBubble type={message.type} message={message.content} key={idx} />
-            })}
-         </div>
-      </div>
+      <>
+         <MessageManager messages={messages} getMessagesAction={getMessagesAction} />
+      </>
    )
 
 }
