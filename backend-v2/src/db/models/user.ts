@@ -1,4 +1,4 @@
-import mongoose, { Model, Schema, Connection, Document } from "mongoose";
+import mongoose, { Model, Schema, Document } from "mongoose";
 
 import { messageSchema } from "./message.js";
 

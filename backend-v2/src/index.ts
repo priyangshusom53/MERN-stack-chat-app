@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
       if (email && onlineUsers.has(email)) {
          onlineUsers.set(
             email,
-            onlineUsers.get(email).filter(id => id !== socket.id)
+            onlineUsers.get(email).filter((id: any) => id !== socket.id)
          );
          if (onlineUsers.get(email).length === 0) {
             onlineUsers.delete(email);
@@ -87,23 +87,23 @@ import { setModel as setMessageModel } from './db/models/message.js';
 setMessageModel(db)
 
 
-import { addUser, findUserByEmail } from './db/models/user.js';
-const userData = {
-   email: "example@email.com",
-   password: "examplePassword",
-   name: "Example Name",
-   avatarUrl: "http://example.com/avatar.png",
-   contacts: []
-}
-const res = await addUser(db, userData);
-console.log(res);
-const user = await findUserByEmail(db, userData.email)
-console.log(user);
+// import { addUser, findUserByEmail } from './db/models/user.js';
+// const userData = {
+//    email: "example@email.com",
+//    password: "examplePassword",
+//    name: "Example Name",
+//    avatarUrl: "http://example.com/avatar.png",
+//    contacts: []
+// }
+// const res = await addUser(db, userData);
+// console.log(res);
+// const user = await findUserByEmail(db, userData.email)
+// console.log(user);
 
 // Routes setup
 import { authRouter } from './routes/auth/authRoute.js';
 app.use('/api/v1/auth', authRouter);
-import { messageRouter } from './routes/contacts/messageRoute.js';
+import { messageRouter } from './routes/contacts/contactsRoute.js';
 app.use('/api/v1/contacts', messageRouter);
 
 
