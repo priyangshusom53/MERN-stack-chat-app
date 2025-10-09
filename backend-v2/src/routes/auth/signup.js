@@ -12,20 +12,18 @@ export const signup = async (req, res) => {
    }
    try {
       const user = await addUser(db, userData);
-      const token = jwt.generateToken({ userId: user._id }, '1d');
+      const token = jwt.generateToken({ userId: user._id, password: user.password }, '1d');
       res.cookie('sessionId', token, {
          httpOnly: true,
          secure: false,
          sameSite: 'strict',
          maxAge: 24 * 60 * 60 * 1000
       });
-      res.status(201).json({ message: 'User created successfully' });
+      res.status(201).json({ message: 'signup successfull' });
    } catch (err) {
-      console.log(err.message);
+      console.error('Error in /auth/v1/signup route: ', err.message);
       res.status(500).json({ message: 'Signup failed' });
    }
-
-
 }
 
 export const signupDemo = async (req, res) => {

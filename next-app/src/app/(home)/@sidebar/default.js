@@ -1,3 +1,5 @@
+'use client';
+
 import { SidebarHeader } from "../../_components/sidebar-components/sidebar-header.js"
 import { SidebarMenu } from '../../_components/sidebar-components/sidebar-menu.js'
 import { SidebarTrigger } from "../../_components/sidebar-components/sidebar.js"
@@ -21,7 +23,7 @@ export default function Sidebar() {
                <div className='size-[30px] aspect-square flex justify-center items-center rounded-[8px]'>
                   <UserRoundPlus className='size-[20px] shrink-0' />
                </div>}
-            className={`${textStyles.text_secondary} text-foreground h-[30px] rounded-[8px]`}
+            className={`${textStyles.text_secondary} text-foreground h-[30px] rounded-[8px] select-none`}
          >
             <div className={`${textStyles.text_secondary}`}>Add Contact</div>
          </SidebarMenu>
@@ -30,7 +32,8 @@ export default function Sidebar() {
                <div className='size-[30px] aspect-square flex justify-center items-center rounded-[8px]'>
                   <UsersRound className='size-[20px] shrink-0' />
                </div>}
-            className={`${textStyles.text_secondary} text-foreground h-[30px] rounded-[8px]`}
+            className={`${textStyles.text_secondary} text-foreground h-[30px] rounded-[8px] select-none`}
+
          >
             <div className={`${textStyles.text_secondary}`}>Add Groups</div>
          </SidebarMenu>
@@ -40,7 +43,8 @@ export default function Sidebar() {
                   <AiLogoDeactivated
                      className='size-[20px] shrink-0 text-[#323232]' />
                </div>}
-            className={`${textStyles.text_secondary} text-foreground h-[30px] rounded-[8px]`}
+            className={`${textStyles.text_secondary} text-foreground h-[30px] rounded-[8px] select-none`}
+            onClick={() => { console.log('ai button clicked') }}
          >
             <div className={`${textStyles.text_secondary}`}>Chat with AI</div>
          </SidebarMenu>

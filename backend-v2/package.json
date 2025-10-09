@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "seed": "node scripts/seed.js"
+    "dev": "nodemon --watch src --exec ts-node-esm src/server.ts",
+    "build": "tsc",
+    "seed": "node scripts/seed.js",
+    "start": "node dist/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +23,10 @@
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.7.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

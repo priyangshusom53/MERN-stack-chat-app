@@ -1,42 +1,45 @@
 import mongoose from "mongoose";
 
 
-export const dbExists = async (dbName) => {
-   const admin = mongoose.connection.db.admin();
+export const dbExists = async (dbName: string) => {
+   const admin = mongoose.connection.db?.admin();
 
    // List all databases
-   const { databases } = await admin.listDatabases();
-   const exists = databases.some(db => db.name === dbName);
-   return exists;
+   if (admin) {
+      const { databases } = await admin.listDatabases();
+      const exists = databases.some(db => db.name === dbName);
+      return exists;
+   }
+   return false;
 }
 
-export const createDatabase = async (dbName) => {
+export const createDatabase = async (dbName: string) => {
    const exists = await dbExists(dbName);
    if (!exists) {
       const db = mongoose.connection.useDb(dbName, { useCache: true });
       console.log(`Database ${dbName} created.`);
-      mongoose.connection = db;
       return db;
    }
    else {
-      return new Error("Database already exists");
+      console.error("Database already exists")
+      return null
    }
 }
 
-export const useDatabase = async (dbName) => {
+export const useDatabase = async (dbName: string) => {
    const exists = await dbExists(dbName);
    if (exists) {
       const db = mongoose.connection.useDb(dbName, { useCache: true });
       console.log(`Switched to database: ${dbName}`);
-      mongoose.connection = db;
       return db;
    }
    else {
-      return new Error("Database does not exist");
+      console.error("Database does not exists")
+      return null
    }
 }
 
-export const deleteDatabase = async (dbName) => {
+export const deleteDatabase = async (dbName: string) => {
    const exists = await dbExists(dbName);
    if (exists) {
       const db = mongoose.connection.useDb(dbName);
@@ -44,7 +47,8 @@ export const deleteDatabase = async (dbName) => {
       console.log(`Database ${dbName} deleted.`);
    }
    else {
-      return new Error("Database does not exist");
+      console.error("Database does not exists")
+      return null
    }
 }
 

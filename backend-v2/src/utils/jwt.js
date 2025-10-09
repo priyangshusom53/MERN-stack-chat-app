@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 
-// payload = {userId: _id}
+// payload = {userId: _id, password: password}
 export const generateToken = (payload, expiresIn) => {
    const JWT_SECRET = process.env.JWT_SECRET;
    if (!JWT_SECRET) throw new Error("No JWT secret found in .env file");

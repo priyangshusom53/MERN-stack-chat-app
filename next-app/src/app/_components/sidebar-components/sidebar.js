@@ -14,7 +14,8 @@ export const useSidebar = () => {
 
 export const SidebarContextProvider = ({ children }) => {
 
-   const [isOpen, setIsOpen] = useState(false);
+   // default is expanded
+   const [isOpen, setIsOpen] = useState(true);
 
    const open = isOpen
    const setOpen = (value) => {
@@ -56,11 +57,11 @@ export const Sidebar = ({ children, width, expandedWidth, height, position, clas
    )
 }
 
-export const Collapsible = ({ icononly, children, className }) => {
+export const Collapsible = ({ icononly, children, className, ...props }) => {
    const { open } = useSidebar()
 
    return (
-      <div className={cn(`collapsible w-full flex flex-row ${open ? 'place-self-start justify-start' : 'justify-center'} items-center`, className)}>
+      <div className={cn(`collapsible w-full flex flex-row ${open ? 'place-self-start justify-start' : 'justify-center'} items-center`, className)} {...props}>
          {icononly ?? <></>}
          {(open) ? children ?? <></> : <></>}
       </div>

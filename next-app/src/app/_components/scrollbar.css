@@ -1,24 +1,20 @@
-/* Target the scrollbar itself */
-.scrollbar-style::-webkit-scrollbar {}
-
-
-/* Example of styling scrollbar buttons */
-.scrollbar-style::-webkit-scrollbar-button {
-   background-color: #b3b3b37a;
+/* Chrome, Edge, Safari */
+.scrollbar-style ::-webkit-scrollbar {
+   width: 10px;
 }
 
-/* Target the scrollbar track (the area behind the thumb) */
-.scrollbar-style::-webkit-scrollbar-track {
-   border-radius: 2px;
+.scrollbar-style ::-webkit-scrollbar-track {
+   background: #22222200;
 }
 
-/* Target the scrollbar thumb (the draggable part) */
-.scrollbar-style::-webkit-scrollbar-thumb {
-   background: #b3b3b37a;
-   border-radius: 2px;
+.scrollbar-style ::-webkit-scrollbar-thumb {
+   background-color: #b2b2b2;
+   border-radius: 10px;
 }
 
-/* Change the thumb's appearance on hover */
-.scrollbar-style::-webkit-scrollbar-thumb:hover {
-   background: #4f3b3b6a;
+.scrollbar-style {
+   scrollbar-color: #b2b2b2 #22222200;
+   /* thumb color | track color */
+   scrollbar-width: thin;
+   /* auto | thin | none */
 }

@@ -2,10 +2,13 @@ import dotenv from 'dotenv';
 import express from 'express';
 import { createServer } from 'node:http'
 import { Server } from 'socket.io';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 
 
@@ -29,6 +32,9 @@ const io = new Server(server, { cors: corsOptions })
 
 // Socket io setup
 const onlineUsers = new Map();
+
+// handlers
+import { getMessageHandler } from './socket/eventHandlers/messageHandler.js';
 io.on('connection', (socket) => {
    const email = socket.handshake.auth.email;
    if (email) {
@@ -55,21 +61,8 @@ io.on('connection', (socket) => {
    });
 
    // message handler
-   socket.on("message", (text, to) => {
-      const from = socket.handshake.auth.email;
-
-      console.log(`Message from ${from} to ${to}: ${text}`);
-
-      // Send back to sender (chat echo)
-      io.to(socket.id).emit("message", text, from, to);
-
-      // Send to receiver if online
-      if (onlineUsers.has(to)) {
-         for (const socketId of onlineUsers.get(to)) {
-            io.to(socketId).emit("message", text, from, to);
-         }
-      }
-   });
+   const messageHandler = getMessageHandler(socket, io, onlineUsers)
+   socket.on("message", messageHandler);
 })
 
 
@@ -109,9 +102,9 @@ console.log(user);
 
 // Routes setup
 import { authRouter } from './routes/auth/authRoute.js';
-app.use('/auth', authRouter);
-import { messageRouter } from './routes/message/messageRoute.js';
-app.use('/message', messageRouter);
+app.use('/api/v1/auth', authRouter);
+import { messageRouter } from './routes/contacts/messageRoute.js';
+app.use('/api/v1/contacts', messageRouter);
 
 
 server.listen(8000, () => {
