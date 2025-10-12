@@ -7,10 +7,9 @@ import type { Request, Response, NextFunction } from "express";
 
 //GET: /api/v1/contacts/:contactEmail/messages?limit=number
 export const getMessages = async (req: Request, res: Response) => {
-
+   console.log(`GET: /api/v1/contacts/:contactEmail/messages: route`)
    const authUser = req.authUser
    if (!authUser) return
-
    let limit = 0
    if (typeof req.query.limit === 'string') {
       limit = parseInt(req.query.limit)
@@ -29,8 +28,9 @@ export const getMessages = async (req: Request, res: Response) => {
          return
       }
       const contact = authUser?.contacts.find((c) => {
-         return c.contact === contactUser?._id
+         return c.contact.equals(contactUser?._id)
       })
+      console.log(contact)
       if (contact) {
          const messages = await findMessagesBetweenUsers(db, authUser._id, contactUser._id, limit)
          if (messages) {
@@ -44,8 +44,12 @@ export const getMessages = async (req: Request, res: Response) => {
             })
             res.status(200).json({ message: "Messages fetched successfully", data: _messages })
          } else {
+            console.log('GET: /api/v1/contacts/:contactEmail/messages: Messages not found')
             res.status(404).json({ message: "Messages not found", data: [] })
          }
+      } else {
+         console.log('GET: /api/v1/contacts/:contactEmail/messages: contact not found in users contacts')
+         res.status(404).json({ messages: 'contact not found' })
       }
    } catch (err: any) {
       console.log("Error in message route: ", err.message);

@@ -22,7 +22,7 @@ export const login = async (req, res) => {
          return;
       }
       else {
-         const token = jwt.generateToken({ userId: user._id }, '1d');
+         const token = jwt.generateToken({ userId: user._id, password: user.password }, '1d');
          res.cookie('sessionId', token, {
             httpOnly: true,
             secure: false,

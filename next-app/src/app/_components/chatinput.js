@@ -46,10 +46,10 @@ export function InputSection({ onSend }) {
 
       setIsSending(true);
       try {
-         console.log("Sending via socket:", { text, to });
-         await onSend(text); // call server action or API
-         console.log("Sending via socket:", { text, to });
-         socket.emit('message', text, to)
+         const res = await onSend(text); // call server action or API
+         const message = res.data
+         if (message) socket.emit('message', message)
+         console.log(message)
          setText(""); // clear input on success
       } catch (err) {
          console.error("Failed to send message", err);

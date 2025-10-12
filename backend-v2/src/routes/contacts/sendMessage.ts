@@ -85,7 +85,7 @@ export const postMessage = async (req: Request, res: Response) => {
             receiverEmail: receiver.email,
             _id: message._id,
             content: message.content,
-            timeStamp: message.timestamp
+            timestamp: message.timestamp
          }
          res.status(201).json({ message: 'Message send successfully', data: _message })
       }

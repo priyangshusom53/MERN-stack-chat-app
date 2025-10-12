@@ -17,13 +17,15 @@ declare global {
 export const verifyAuthUser = async (req: Request, res: Response, next: NextFunction) => {
 
    const sessionId = req.cookies.sessionId
-   console.log(sessionId)
+   console.log('verifyAuthUser middleware: ', sessionId)
    try {
       if (!sessionId) {
          console.log('No sessionId provided')
          res.status(401).json({ message: 'unauthorized user' })
       }
+      console.error('jwt error')
       const decoded = jwt.verifyToken(sessionId)
+      console.error('jwt error')
       if (decoded !== null) {
          const { userId, password } = decoded
          const user = await findUserById(db, userId)

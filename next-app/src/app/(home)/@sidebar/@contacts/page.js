@@ -9,22 +9,41 @@ import { Input } from '@/components/ui/input.jsx'
 
 import { ContactManager } from './contactManager.js'
 import { Styles, textStyles } from '@/app/_components/styles.js'
+import { cookies } from 'next/headers.js'
 export default async function Contacts() {
    let contacts = null
    const res = await isUserValidAction()
    if (res !== false) {
-      const user = res.user
+
       try {
-         const getContactsRes = await fetch(`http://localhost:8000/message/contacts/${user.email}`, {
+         const cookieStore = await cookies()
+         const cookieHeader = cookieStore.toString()
+
+         const getContactsRes = await fetch(`http://localhost:8000/api/v1/contacts`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+               'Content-Type': 'application/json',
+               'Cookie': cookieHeader
+            },
             cache: 'no-store'
          })
          if (getContactsRes.ok) {
-            const getContactsResJson = await getContactsRes.json()
-            const data = getContactsResJson.data
+            const body = await getContactsRes.json()
+            const data = body.data
             contacts = data.map((contact) => {
-               return { name: contact.name, email: contact.email, lastMessage: 'sample last message' }
+               return {
+                  name: contact.contactDetails.name,
+                  email: contact.contactDetails.email,
+                  avatarUrl: contact.contactDetails.avatarUrl,
+                  chatDeleted: contact.chatDeleted,
+                  currentMessageCount: contact.currentMessageCount,
+                  lastMessage: (!contact.lastMessage) ? null : {
+                     type: contact.lastMessage.type,
+                     _id: contact.lastMessage._id,
+                     content: contact.lastMessage.content,
+                     timeStamp: contact.lastMessage.timeStamp
+                  }
+               }
             })
          }
       } catch (err) {
@@ -32,9 +51,48 @@ export default async function Contacts() {
       }
    }
 
+   const getContactAction = async (contactEmail) => {
+      'use server';
+
+      console.warn('getContactAction')
+      try {
+         const cookieStore = await cookies()
+         const cookieHeader = cookieStore.toString()
+
+         const res = await fetch(`http://localhost:8000/api/v1/contacts/${contactEmail}`, {
+            method: 'GET',
+            headers: {
+               'Content-Type': 'application/json',
+               'Cookie': cookieHeader
+            },
+            cache: 'no-store'
+         })
+         if (res.ok) {
+            const body = await res.json()
+            const contact = body.data
+            const _contact = {
+               name: contact.contactDetails.name,
+               email: contact.contactDetails.email,
+               avatarUrl: contact.contactDetails.avatarUrl,
+               chatDeleted: contact.chatDeleted,
+               currentMessageCount: contact.currentMessageCount,
+               lastMessage: (!contact.lastMessage) ? null : {
+                  type: contact.lastMessage.type,
+                  _id: contact.lastMessage._id,
+                  content: contact.lastMessage.content,
+                  timeStamp: contact.lastMessage.timeStamp
+               }
+            }
+            console.log(_contact)
+            return _contact
+         }
+      } catch (err) {
+         console.error(`Error in getContact action: ${err.message}`)
+         return null
+      }
+   }
 
    const styles = new Styles()
-
    return (
       <>
          <SidebarGroup className={'relative gap-[4px]'}>
@@ -55,7 +113,7 @@ export default async function Contacts() {
                </div>
             </SidebarLabel>
             {/* contact list */}
-            <ContactManager contacts={contacts} />
+            <ContactManager contacts={contacts} getContactAction={getContactAction} />
          </SidebarGroup>
       </>
    )

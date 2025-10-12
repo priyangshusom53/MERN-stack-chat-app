@@ -6,44 +6,48 @@ import { displayStyles } from "@/app/_components/styles.js"
 
 // check user status and fetch user
 import { isUserValidAction } from "@/app/server/validateUser.js"
+import { cookies } from "next/headers"
 
 export default async function Input({ searchParams }) {
 
-   const thisUser = await isUserValidAction()
+   const authUser = await isUserValidAction()
    const { user: contactUserEmail } = await searchParams
 
    async function onSendAction(text) {
       'use server';
 
-      let contactName = null
       let contactEmail = null
-
+      const message = text
       console.log(`----onSend Action----`)
+
       try {
-         if (thisUser !== false) {
+         const cookieStore = await cookies()
+         const cookieHeader = cookieStore.toString()
+         //const sessionId = cookieStore.get('sessionId')
+         if (cookieHeader) {
             // fetch contact data
             const { user: contactUserEmail } = await searchParams
-            if (contactUserEmail !== null) {
-               const res = await fetch(`http://localhost:8000/message/get-user/${contactUserEmail}`, {
-                  method: 'GET',
-                  headers: { 'Content-Type': 'application/json' },
-                  cache: 'no-store'
-               })
-               if (res.ok) {
-                  const data = await res.json()
-                  contactName = data.name
-                  contactEmail = data.email
-               }
+            if (contactUserEmail) {
+               contactEmail = contactUserEmail
             }
-            if (contactEmail && contactName) {
-               console.log(`onSend Action: sending message:'${text}' to backend`)
-               const res = await fetch('http://localhost:8000/message/send-message', {
+            if (contactEmail) {
+               console.log(`onSend Action: sending message:'${message}' to backend`)
+               const res = await fetch(`http://localhost:8000/api/v1/contacts/${contactEmail}/message`, {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ senderEmail: thisUser.user.email, receiverEmail: contactEmail, messageContent: text }),
+                  headers: {
+                     'Content-Type': 'application/json',
+                     'Cookie': cookieHeader
+                  },
+                  body: JSON.stringify({
+                     text: message
+                  }),
                   cache: 'no-store'
                })
-               const data = await res.json()
+               const body = await res.json()
+               if (res.ok) {
+                  return body
+               }
+               return body
             }
          }
       } catch (err) {

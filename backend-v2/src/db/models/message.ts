@@ -51,7 +51,7 @@ export const addMessage = async (db: DataBase, messageData: MessageData) => {
             console.log("Message saved:", savedMessage);
             const sender = await findUserById(db, messageData.senderId)
             if (sender !== null) {
-               const contact = sender.contacts.find((c) => { return c.contact === messageData.receiverId })
+               const contact = sender.contacts.find((c) => { return c.contact.equals(messageData.receiverId) })
                if (contact) {
                   if (contact.chatDeleted) {
                      contact.chatDeleted = false
@@ -59,7 +59,7 @@ export const addMessage = async (db: DataBase, messageData: MessageData) => {
                   contact.messageCount += 1
                   contact.currentMessageCount += 1
                   contact.lastMessage = savedMessage._id
-                  const contactIdx = sender.contacts.findIndex((c) => { return c.contact === messageData.receiverId })
+                  const contactIdx = sender.contacts.findIndex((c) => { return c.contact.equals(messageData.receiverId) })
                   if (contactIdx !== -1) {
                      sender.contacts[contactIdx] = contact
                   }
@@ -68,12 +68,12 @@ export const addMessage = async (db: DataBase, messageData: MessageData) => {
                } else {
                   const updatedSender = await addContact(db, sender._id, messageData.receiverId)
 
-                  const contact = updatedSender.contacts.find((c) => { return c.contact === messageData.receiverId })
+                  const contact = updatedSender.contacts.find((c) => { return c.contact.equals(messageData.receiverId) })
                   if (contact) {
                      contact.messageCount += 1
                      contact.currentMessageCount += 1
                      contact.lastMessage = savedMessage._id
-                     const contactIdx = updatedSender.contacts.findIndex((c) => { return c.contact === messageData.receiverId })
+                     const contactIdx = updatedSender.contacts.findIndex((c) => { return c.contact.equals(messageData.receiverId) })
                      if (contactIdx !== -1) {
                         updatedSender.contacts[contactIdx] = contact
                      }
@@ -85,7 +85,7 @@ export const addMessage = async (db: DataBase, messageData: MessageData) => {
             }
             const receiver = await findUserById(db, messageData.receiverId)
             if (receiver) {
-               const contact = receiver.contacts.find((c) => { return c.contact === messageData.senderId })
+               const contact = receiver.contacts.find((c) => { return c.contact.equals(messageData.senderId) })
                if (contact) {
                   if (contact.chatDeleted) {
                      contact.chatDeleted = false
@@ -93,7 +93,7 @@ export const addMessage = async (db: DataBase, messageData: MessageData) => {
                   contact.messageCount += 1
                   contact.currentMessageCount += 1
                   contact.lastMessage = savedMessage._id
-                  const contactIdx = receiver.contacts.findIndex((c) => { return c.contact === messageData.senderId })
+                  const contactIdx = receiver.contacts.findIndex((c) => { return c.contact.equals(messageData.senderId) })
                   if (contactIdx !== -1) {
                      receiver.contacts[contactIdx] = contact
                   }
@@ -102,12 +102,12 @@ export const addMessage = async (db: DataBase, messageData: MessageData) => {
                } else {
                   const updatedReceiver = await addContact(db, receiver._id, messageData.senderId)
 
-                  const contact = updatedReceiver.contacts.find((c) => { return c.contact === messageData.senderId })
+                  const contact = updatedReceiver.contacts.find((c) => { return c.contact.equals(messageData.senderId) })
                   if (contact) {
                      contact.messageCount += 1
                      contact.currentMessageCount += 1
                      contact.lastMessage = savedMessage._id
-                     const contactIdx = updatedReceiver.contacts.findIndex((c) => { return c.contact === messageData.senderId })
+                     const contactIdx = updatedReceiver.contacts.findIndex((c) => { return c.contact.equals(messageData.senderId) })
                      if (contactIdx !== -1) {
                         updatedReceiver.contacts[contactIdx] = contact
                      }
@@ -135,7 +135,7 @@ export const findMessagesBetweenUsers = async (db: DataBase, userId1: mongoose.T
       try {
          if (Message) {
             const user1 = await findUserById(db, userId1)
-            const contact = user1?.contacts.find((c) => { return c.contact === userId2 })
+            const contact = user1?.contacts.find((c) => { return c.contact.equals(userId2) })
             if (contact) {
                let messageCountToFetch = 0
                if (limit >= 1) {
@@ -148,7 +148,7 @@ export const findMessagesBetweenUsers = async (db: DataBase, userId1: mongoose.T
                      { senderId: userId1, receiverId: userId2 },
                      { senderId: userId2, receiverId: userId1 }
                   ]
-               }).sort({ timestamp: -1 }).limit(messageCountToFetch);
+               }).sort({ timestamp: 1 }).limit(messageCountToFetch);
                return messages;
             }
          }

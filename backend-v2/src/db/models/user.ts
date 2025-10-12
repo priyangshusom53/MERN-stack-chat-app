@@ -206,7 +206,7 @@ export const getContacts = async (db: DataBase, userId: mongoose.Types.ObjectId)
                // 2️⃣ Lookup the contact users
                {
                   $lookup: {
-                     from: "users",
+                     from: "Users",
                      let: { contactsList: "$contacts" },
                      pipeline: [
                         {
@@ -230,7 +230,7 @@ export const getContacts = async (db: DataBase, userId: mongoose.Types.ObjectId)
                // 3️⃣ Lookup the last messages
                {
                   $lookup: {
-                     from: "messages",
+                     from: "Messages",
                      let: { contactsList: "$contacts" },
                      pipeline: [
                         {

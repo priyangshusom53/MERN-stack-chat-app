@@ -9,6 +9,7 @@ import { interaction_color, displayStyles } from "@/app/_components/styles.js"
 
 // placeholder
 import contactImage from '@/../public/contact-avatar.svg'
+import { cookies } from "next/headers"
 
 export default async function Header({ searchParams }) {
    let contactName = null
@@ -17,18 +18,25 @@ export default async function Header({ searchParams }) {
    const thisUser = await isUserValidAction()
    try {
       if (thisUser !== false) {
+         const cookieStore = await cookies()
+         const cookieHeader = cookieStore.toString()
+
          // fetch contact data
          const { user: contactUserEmail } = await searchParams
          if (contactUserEmail !== null) {
-            const res = await fetch(`http://localhost:8000/message/get-user/${contactUserEmail}`, {
+            const res = await fetch(`http://localhost:8000/api/v1/contacts/${contactUserEmail}`, {
                method: 'GET',
-               headers: { 'Content-Type': 'application/json' },
+               headers: {
+                  'Content-Type': 'application/json',
+                  'Cookie': cookieHeader
+               },
                cache: 'no-store'
             })
             if (res.ok) {
-               const data = await res.json()
-               contactName = data.name
-               contactEmail = data.email
+               const body = await res.json()
+               const contact = body.data
+               contactName = contact.contactDetails.name
+               contactEmail = contact.contactDetails.email
             }
          }
       }

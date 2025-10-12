@@ -2,10 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import { displayStyles } from "../styles";
-export const SidebarGroup = ({ children, className }) => {
+export const SidebarGroup = ({ children, className, ...props }) => {
 
    return (
-      <div className={cn(`sidebar-group w-full h-full ${displayStyles.flex_col_start_center} scrollbar-style group`, className)}>
+      <div className={cn(`sidebar-group w-full h-full ${displayStyles.flex_col_start_center} scrollbar-style group`, className)} {...props}>
          {children}
       </div>)
 }

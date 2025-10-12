@@ -12,10 +12,13 @@ export const getContacts = async (req: Request, res: Response) => {
       if (!authUser) return
 
       const contacts = await getContactList(db, authUser._id)
+
       if (contacts) {
          if (!contacts.length) {
-            res.status(200).json({ message: 'User has no contact', data: [] })
+            console.log('user has no contact')
+            res.status(400).json({ message: 'User has no contact', data: [] })
          }
+
          const _contacts = contacts.map((c: any) => {
             const _contact = {
                contactDetails: {
@@ -26,7 +29,7 @@ export const getContacts = async (req: Request, res: Response) => {
                chatDeleted: c.chatDeleted,
                messageCount: c.messageCount,
                currentMessageCount: c.currentMessageCount,
-               lastMessage: {
+               lastMessage: (c.chatDeleted && !c.currentMessageCount) ? null : {
                   type: (c.lastMessage.senderId === authUser._id) ? 'sent' : 'received',
                   _id: c.lastMessage._id,
                   content: c.lastMessage.content,

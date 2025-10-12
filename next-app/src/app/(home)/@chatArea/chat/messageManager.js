@@ -6,11 +6,15 @@ import { displayStyles } from "@/app/_components/styles.js"
 import ChatBubble from '@/app/_components/chatbubble.js'
 
 import { setCurrentMessages, addMessage } from "./currentMessagesSlice/currentMessagesSlice.js";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
 import { useClientContext } from "../../client.js";
+import { setContactUser } from "../../@sidebar/@contacts/contactUserSlice/contactUserSlice.js";
 
-export const MessageManager = ({ messages, getMessagesAction }) => {
+import { appEvents, publishEvent } from "../../appEvents/events.js";
+
+export const MessageManager = ({ messages, contactUserEmail, getMessagesAction }) => {
 
    const dispatch = useDispatch()
    const [isLoading, setIsLoading] = useState(false)
@@ -20,19 +24,54 @@ export const MessageManager = ({ messages, getMessagesAction }) => {
    const authUser = useSelector((state) => state.authUser.email)
    const contactUser = useSelector((state) => state.contactUser.email)
 
+   const currentChats = useSelector((state) => state.currentChats.list)
+
    // this effect runs when socketStatus changes to 'connected' 
    // to register the message event handler
    useEffect(() => {
 
+      dispatch(setContactUser(contactUserEmail))
       dispatch(setCurrentMessages(messages))
 
       if (socketStatus === 'connected') {
-         socket.on('message', (text, from, to) => {
-            console.log(text)
+         console.warn('message event received by MessageManager')
+         socket.on('message', (message) => {
             let type = 'received'
-            if (from === authUser) type = 'sent'
-            const message = { content: text, type, timestamp: new Date(Date.now()).toString() }
-            dispatch(addMessage(message))
+            if (message.senderEmail === authUser) type = 'sent'
+            const _message = {
+               _id: message._id,
+               content: message.content,
+               type,
+               timestamp: message.timestamp
+            }
+            console.log(message)
+            console.log(currentChats)
+            // check if message sender or receiver exist in currentChats, if not publish 'addContact' event
+            const chatExist = currentChats.some((current) => {
+               if (_message.type === 'sent')
+                  return current.email === message.receiverEmail
+               if (_message.type === 'received')
+                  return current.email === message.senderEmail
+            })
+            console.log('chatExist: ', chatExist)
+            if (!chatExist) {
+               publishEvent('contactManager', {
+                  name: appEvents.addChat, detail: {
+                     contact: (_message.type === 'sent') ? message.receiverEmail : message.senderEmail
+                  }
+               })
+               console.warn('addChatEvent')
+            } else {
+               publishEvent('contactManager', { name: appEvents.updateChat, detail: { contact: (_message.type === 'sent') ? message.receiverEmail : message.senderEmail } })
+               console.warn('updateChatEvent')
+            }
+            // add this message to currentMessages only when sender or receiver is contactUser
+            console.log(contactUser)
+            if (contactUser === message.senderEmail || contactUser === message.receiverEmail) {
+               console.log('message added to currentMessages')
+               dispatch(addMessage(_message))
+            }
+
          })
       }
    }, [socketStatus])
