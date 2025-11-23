@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { useState } from "react";
 import { displayStyles } from "../styles.js";
 
@@ -48,7 +48,13 @@ export const Sidebar = ({ children, width, expandedWidth, height, position, clas
    return (
       <div data-state={state} className={cn(` ${(isVertical) ? `h-[${height ?? '100%'}] w-full ${open ? `w-[${expandedWidth}]` : 'w-auto'}` : `w-[${width ?? '100%'}] h-auto`} shrink-0 ${displayStyles.flex_col_center} h-full group peer`)}
          style={{
-            width: `${open ? expandedWidth ?? 'auto' : 'auto'}`
+            width: `${open ? expandedWidth ?? 'auto' : 'auto'}`,
+
+            top: 0,
+            left: 0,
+            background: 'white',
+            transform: `${open ? "translate-x-0" : "-translate-x-full"}`,
+            zIndex: 10
          }}>
          <div className={cn(`sidebar w-full h-full ${displayStyles.flex_col_start_center} relative`, className)}>
             {children}

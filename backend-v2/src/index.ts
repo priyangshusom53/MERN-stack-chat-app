@@ -16,7 +16,7 @@ const app = express();
 import cors from 'cors'
 
 const corsOptions = {
-   origin: 'http://192.168.0.103:3000', // Replace with your client's origin
+   origin: `${process.env.CLIENT_ORIGIN}:3000`, // Replace with your client's origin
    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
    credentials: true
 };

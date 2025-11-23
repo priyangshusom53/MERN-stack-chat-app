@@ -53,7 +53,7 @@ export default async function HomeLayout({ children, chatArea, sidebar }) {
   return (
     <html lang="en" className='m-0 w-full h-full font-inter'>
 
-      <body className='m-0 w-full h-full flex flex-row justify-center items-center'>
+      <body className='m-0 w-full h-full flex flex-row justify-center items-center relative'>
 
         <SidebarContextProvider >
 
@@ -67,7 +67,8 @@ export default async function HomeLayout({ children, chatArea, sidebar }) {
                   <div className="h-full shrink-0 flex flex-col justify-center items-center">
                     {sidebar}
                   </div>
-                  <div className="flex-1 shrink w-full h-full ">{chatArea}
+                  <div className="flex-1 shrink w-full h-full ">
+                    {chatArea}
                   </div>
 
                 </HomePageContainer>
