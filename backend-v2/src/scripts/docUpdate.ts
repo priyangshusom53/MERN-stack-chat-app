@@ -3,7 +3,7 @@ import { UserModel as User, UserSchema } from "../db/_models/user.js";
 import { type IUser, userSchema } from "../db/models/user.js"
 
 async function migrate() {
-   await mongoose.connect("mongodb+srv://priyangshusom975_db_user:20YX7gIrKFItqqCQ@cluster0.lzsdvav.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+   await mongoose.connect("mongoURI");
 
    const connection = mongoose.connection.useDb("chat-app")
    const userModel = connection.model<IUser>("User", userSchema, "Users")

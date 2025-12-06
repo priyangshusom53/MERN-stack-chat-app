@@ -34,6 +34,7 @@ export class SignupWebController<WebRequestType extends SignupWebRequest, WebRes
 import type { Action, RequestDS, ResultDS } from "../actionInterface.js";
 import type { UserDataAccess } from "../../dataAccess/userDataAccess.js";
 import type { User } from "../../core/user.js";
+import type { EncryptionService } from "../../encryption/encryptionInterface.js";
 interface SignupRequest extends RequestDS {
    email: string;
    name: string;
@@ -42,12 +43,19 @@ interface SignupRequest extends RequestDS {
 
 interface SignupResult extends ResultDS {
    user?: User;
+   session?: {
+      token: string,
+      expiresIn: string
+   }
 }
 
 export class SignupAction implements Action<SignupRequest, SignupResult> {
 
-   constructor(private userDataAccess: UserDataAccess) {
+   #encryptionService: EncryptionService;
+
+   constructor(private userDataAccess: UserDataAccess, encryptionService: EncryptionService) {
       this.userDataAccess = userDataAccess
+      this.#encryptionService = encryptionService
    }
 
    async Execute(req: SignupRequest): Promise<SignupResult> {
@@ -55,6 +63,10 @@ export class SignupAction implements Action<SignupRequest, SignupResult> {
 
       if (!user) return { success: false, statusMessage: "User signup falied" }
 
-      return { success: true, statusMessage: "user signedup successfully", user: user }
+      const token = this.#encryptionService.Encrypt({ id: user.id, password: user.password }, { time: 1, unit: 'd' })
+
+      if (!token) return { success: false, statusMessage: "user signup failed" }
+
+      return { success: true, statusMessage: "user signedup successfully", user: user, session: { token: token, expiresIn: "1d" } }
    }
 }
