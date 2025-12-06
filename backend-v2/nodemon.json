@@ -7,5 +7,5 @@
       "src/**/*.test.ts",
       "src/**/*.spec.ts"
    ],
-   "exec": "tsx src/index.ts"
+   "exec": "tsx src/main.ts"
 }
