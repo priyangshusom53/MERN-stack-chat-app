@@ -1,9 +1,9 @@
 import * as jwt from "jsonwebtoken"
-import { type Secret, type SignOptions } from "jsonwebtoken";
-import type { EncryptionService, Expiry } from "./encryptionInterface.js";
+import type { Secret, SignOptions } from "jsonwebtoken";
+import type { EncryptionService, Expiry, PayloadType } from "./encryptionInterface.js";
 
 class JWTEncryption implements EncryptionService {
-   Encrypt(data: object, expiresIn: Expiry): string | null {
+   Encrypt(data: PayloadType, expiresIn: Expiry): string | null {
       const JWT_SECRET = process.env.JWT_SECRET as Secret;
       if (!JWT_SECRET) {
          console.log("No JWT secret found in .env file");
@@ -13,10 +13,27 @@ class JWTEncryption implements EncryptionService {
       const options: SignOptions = {
          expiresIn: `${expiresIn.time}${expiresIn.unit}`
       }
-      let token = jwt.sign(data, JWT_SECRET, options)
-      return token
+      try {
+         const token = jwt.sign(data, JWT_SECRET, options)
+         return token
+      } catch (err: any) {
+         console.error(err.message)
+         return null
+      }
    }
-   Decrypt(token: string): object {
+   Decrypt(token: string): PayloadType | null {
+      const JWT_SECRET = process.env.JWT_SECRET as Secret;
+      if (!JWT_SECRET) {
+         console.log("No JWT secret found in .env file");
+         return null
+      }
 
+      try {
+         const payLoad = jwt.verify(token, JWT_SECRET) as PayloadType
+         return payLoad
+      } catch (err: any) {
+         console.error(err.message)
+         return null
+      }
    }
 }
