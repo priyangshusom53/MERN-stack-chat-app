@@ -25,6 +25,16 @@ export class SignupWebController<WebRequestType extends SignupWebRequest, WebRes
       if (!result.success) {
          return res.status(400).json({ error: result.statusMessage })
       }
+      if (result.session && result.user) {
+         res.cookie('sessionId', result.session.token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+            maxAge: result.session.expiresIn
+         });
+         return res.status(201).json({ message: result.statusMessage, user: result.user })
+      }
+      return res.status(400).json({ error: result.statusMessage })
    }
 
 }
@@ -45,7 +55,7 @@ interface SignupResult extends ResultDS {
    user?: User;
    session?: {
       token: string,
-      expiresIn: string
+      expiresIn: number
    }
 }
 
@@ -67,6 +77,6 @@ export class SignupAction implements Action<SignupRequest, SignupResult> {
 
       if (!token) return { success: false, statusMessage: "user signup failed" }
 
-      return { success: true, statusMessage: "user signedup successfully", user: user, session: { token: token, expiresIn: "1d" } }
+      return { success: true, statusMessage: "user signedup successfully", user: user, session: { token: token, expiresIn: 24 * 60 * 60 * 1000 } }
    }
 }
