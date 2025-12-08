@@ -51,11 +51,12 @@ interface SignupRequest extends RequestDS {
    password: string;
 }
 
+type timeInMilliSec = number
 interface SignupResult extends ResultDS {
    user?: User;
    session?: {
       token: string,
-      expiresIn: number
+      expiresIn: timeInMilliSec
    }
 }
 
