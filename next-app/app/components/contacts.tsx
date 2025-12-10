@@ -9,7 +9,7 @@ const pickPalette = (name?: string) => {
       const index = name.charCodeAt(0) % colorPalette.length
       return colorPalette[index]
    }
-   return "black"
+   return "white"
 }
 
 interface ContactProps {
@@ -21,19 +21,19 @@ interface ContactProps {
 
 export const ContactCard = ({ name, email, imgLink, lastMessage }: ContactProps) => {
    return (
-      <Card.Root width="352px" height="64px" backgroundColor="#D2DFF4" paddingX="1rem" key={email}>
+      <Card.Root width="full" height="64px" backgroundColor="#FFFFFF" paddingX="1rem" variant="outline" key={email}>
          <HStack height="full" justifyContent="center" alignItems="center" rowGap="8px">
             <Avatar.Root height="36px" width="36px" colorPalette={pickPalette(name)}>
                <Avatar.Fallback name={name} />
-               <Avatar.Image src={imgLink ? imgLink : (name || name === "" ? "" : "https://bit.ly/broken-link")} />
+               <Avatar.Image src={imgLink ? imgLink : (!name || name === "" ? "https://bit.ly/broken-link" : undefined)} />
             </Avatar.Root>
             <Card.Body height="full" padding={"0px"} justifyContent="center">
                <VStack padding="auto" alignItems="start">
                   <Card.Title>
                      <Text color="black" fontSize="14px" lineHeight="1">{name}</Text>
                   </Card.Title>
-                  <Card.Description>
-                     <Text color="#626262" fontSize="12px" lineHeight="1.33">{lastMessage}</Text>
+                  <Card.Description color="#626262" fontSize="12px" lineHeight="1.33">
+                     {lastMessage}
                   </Card.Description>
                </VStack>
             </Card.Body>
