@@ -1,5 +1,9 @@
 
+// IO layer for web (ExpressJS)
 
+
+
+// Adapter layer
 import type { WebRequest, WebResponse } from "../webReqRes.js";
 
 interface SignupWebRequest extends WebRequest {
@@ -20,10 +24,24 @@ export class SignupWebController<WebRequestType extends SignupWebRequest, WebRes
    }
 
    async Signup(req: WebRequestType, res: WebResponseType) {
-      const result = await this.signupAction.Execute({ name: req.body.name, email: req.body.email, password: req.body.password })
+
+      const result = await this.signupAction.Execute(
+         { 
+            name: req.body.name, 
+            email: req.body.email, 
+            password: req.body.password
+         }
+      )
 
       if (!result.success) {
-         return res.status(400).json({ error: result.statusMessage })
+         if(result.errorType === "USER_EXISTS"){
+            return res.status(409).json(
+            { 
+               error: result.statusMessage,
+               errortype: result.errorType,
+            })
+         }
+         return res.status(400).json({ error: result.statusMessage, errortype: result.errorType })
       }
       if (result.session && result.user) {
          res.cookie('sessionId', result.session.token, {
@@ -34,25 +52,43 @@ export class SignupWebController<WebRequestType extends SignupWebRequest, WebRes
          });
          return res.status(201).json({ message: result.statusMessage, user: result.user })
       }
-      return res.status(400).json({ error: result.statusMessage })
+      return res.status(400).json({ error: result.statusMessage, errortype: result.errorType })
    }
 
 }
 
 
 
+// Use case layer
 import type { Action, RequestDS, ResultDS } from "../actionInterface.js";
 import type { UserDataAccess } from "../../dataAccess/userDataAccess.js";
 import type { User } from "../../core/user.js";
 import type { EncryptionService } from "../../encryption/encryptionInterface.js";
+import { convertToMilliseconds } from "../../utils/utils.js";
+import { error } from "console";
+import type { UserRepo } from "../../db/repos/userRepo.js";
+
+/*
+ * Minimum data for user signup
+ * TODO:
+ *   about,
+ *   age,
+ *   profilePic,
+ *   contacts...
+*/
 interface SignupRequest extends RequestDS {
    email: string;
    name: string;
    password: string;
 }
 
+/*
+ *  returns User object from domain layer and session details
+ *  if signup succeeds
+*/
 type timeInMilliSec = number
 interface SignupResult extends ResultDS {
+   errorType: string;
    user?: User;
    session?: {
       token: string,
@@ -64,20 +100,56 @@ export class SignupAction implements Action<SignupRequest, SignupResult> {
 
    #encryptionService: EncryptionService;
 
-   constructor(private userDataAccess: UserDataAccess, encryptionService: EncryptionService) {
+   constructor(
+      private userDataAccess: UserDataAccess, 
+      encryptionService: EncryptionService
+   ) {
       this.userDataAccess = userDataAccess
       this.#encryptionService = encryptionService
    }
 
    async Execute(req: SignupRequest): Promise<SignupResult> {
-      const user = await this.userDataAccess.CreateUser({ name: req.name, email: req.email, password: req.password })
 
-      if (!user) return { success: false, statusMessage: "User signup falied" }
+      try{
 
-      const token = this.#encryptionService.Encrypt({ id: user.id, password: user.password }, { time: 1, unit: 'd' })
+         if(req.email.trim() === "" || req.password.trim().length < 6 || req.name.trim() === ""){
+            return { 
+               success: false, 
+               errorType: "INVALID_USER_DATA",
+               statusMessage: "Name, email and password are required for signup" 
+            }
+         }
 
-      if (!token) return { success: false, statusMessage: "user signup failed" }
 
-      return { success: true, statusMessage: "user signedup successfully", user: user, session: { token: token, expiresIn: 24 * 60 * 60 * 1000 } }
+         // check if user exists
+         const existingUser = await this.userDataAccess.FindUserByEmail(req.email)
+
+         if (existingUser) {
+            return { 
+               success: false, 
+               errorType: "USER_EXISTS",
+               statusMessage: "User already exists, use sign in instead" 
+            }
+         }
+
+         // Create user
+         const user = await this.userDataAccess.CreateUser({ name: req.name, email: req.email, password: req.password })
+
+         if (!user) return { success: false, errorType: "UNKNOWN_ERROR", statusMessage: "User signup failed" }
+
+         const token = this.#encryptionService.Encrypt({ id: user.id, password: user.password }, { time: 1, unit: 'd' })
+
+         if (!token) return { success: false, errorType: "UNKNOWN_ERROR", statusMessage: "user signup failed" }
+         return { 
+            success: true,
+            errorType: "NO_ERROR", 
+            statusMessage: "user signedup successfully", 
+            user: user, 
+            session: { token: token, expiresIn: convertToMilliseconds(1, 'days') } 
+         }
+
+      }catch(err:any){
+         return { success: false, errorType: "UNKNOWN_ERROR", statusMessage: `An error occurred during signup ${err.message}` }
+      }
    }
 }

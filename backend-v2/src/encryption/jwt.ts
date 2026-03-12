@@ -1,4 +1,4 @@
-import * as jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken"
 import type { Secret, SignOptions } from "jsonwebtoken";
 import type { EncryptionService, Expiry, PayloadType } from "./encryptionInterface.js";
 
@@ -6,7 +6,7 @@ class JWTEncryption implements EncryptionService {
    Encrypt(data: PayloadType, expiresIn: Expiry): string | null {
       const JWT_SECRET = process.env.JWT_SECRET as Secret;
       if (!JWT_SECRET) {
-         console.log("No JWT secret found in .env file");
+         console.error("No JWT secret found in .env file");
          return null
       }
 
@@ -37,3 +37,5 @@ class JWTEncryption implements EncryptionService {
       }
    }
 }
+
+export { JWTEncryption }
