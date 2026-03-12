@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyAuthUser } from "../../middlewares/auth.middleware.ts";
+import { verifyAuthUser } from "../../middlewares/authMiddleware.js";
 
 export const messageRouter = Router();
 

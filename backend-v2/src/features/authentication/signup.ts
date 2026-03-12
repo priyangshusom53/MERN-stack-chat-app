@@ -47,10 +47,11 @@ export class SignupWebController<WebRequestType extends SignupWebRequest, WebRes
          res.cookie('sessionId', result.session.token, {
             httpOnly: true,
             secure: false,
-            sameSite: 'strict',
+            sameSite: 'lax',
+            path: "/",
             maxAge: result.session.expiresIn
          });
-         return res.status(201).json({ message: result.statusMessage, user: result.user })
+         return res.status(201).json({ message: result.statusMessage, user: { id: result.user.id, name: result.user.name, email: result.user.email } })
       }
       return res.status(400).json({ error: result.statusMessage, errortype: result.errorType })
    }

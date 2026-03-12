@@ -30,13 +30,15 @@ export class LoginWebController<WebRequestType extends LoginWebRequest, WebRespo
          return res.status(400).json({ error: result.statusMessage, errortype: result.errorType })
       }
       if (result.session && result.user) {
+         console.log("Cookie generated TTL: ", result.session.expiresIn)
          res.cookie('sessionId', result.session.token, {
             httpOnly: true,
             secure: false,
-            sameSite: 'strict',
+            sameSite: 'lax',
+            path: "/",
             maxAge: result.session.expiresIn
          });
-         return res.status(200).json({ message: result.statusMessage, user: result.user })
+         return res.status(200).json({ message: result.statusMessage, user: { id: result.user.id, name: result.user.name, email: result.user.email } })
       }
 
       return res.status(400).json({ error: result.statusMessage, errortype: result.errorType })

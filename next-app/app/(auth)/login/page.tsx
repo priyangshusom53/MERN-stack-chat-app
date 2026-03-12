@@ -2,27 +2,20 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { useAuth } from "@/context/authContext"
-import { Button, Input, Field } from "@chakra-ui/react"
+import { Button, Input } from "@chakra-ui/react"
 import { PasswordInput } from "@/components/ui/password-input"
+import { useAuthStore } from "@/state/authStore"
 
-export default function SignupPage(){
-
-   const router = useRouter()
+export default function Loginpage(){
 
 
-   const [name,setName] = useState("")
    const [email,setEmail] = useState("")
    const [password,setPassword] = useState("")
    const [error,setError] = useState("")
    const [loading,setLoading] = useState(false)
 
    const validateInput = () => {
-
-      if(!name.trim()){
-         return "Name is required"
-      }
 
       if(!email.includes("@")){
          return "Invalid email"
@@ -35,7 +28,22 @@ export default function SignupPage(){
       return null
    }
 
-   const signupButtonHandler = async () => {
+   const router = useRouter()
+   const { user, isLoading, checkUser } = useAuthStore()
+
+   useEffect(()=>{
+      checkUser()
+   }, [])
+
+   useEffect(()=>{
+      if(!isLoading && user){
+         router.push("/")
+      }else if(!isLoading && !user){
+         setLoading(false)
+      }
+   },[isLoading, user])
+
+   const loginButtonHandler = async () => {
 
       const validationError = validateInput()
 
@@ -49,14 +57,13 @@ export default function SignupPage(){
 
       try{
 
-         const res = await fetch("http://localhost:8000/auth/signup",{
+         const res = await fetch("http://localhost:8000/auth/login",{
             method:"POST",
             headers:{
                "Content-Type":"application/json"
             },
             credentials:"include",
             body:JSON.stringify({
-               name,
                email,
                password
             })
@@ -65,20 +72,13 @@ export default function SignupPage(){
          const data = await res.json()
 
          if(!res.ok){
-            if(data.errortype === "USER_EXISTS"){
-               console.error(data.error)
-               setError(data.error)
-               setTimeout(()=>{
-                  router.push("/login")
-               }, 2000)
-               return
-            }
-            setError(data.error || "Signup failed")
+            setError(data.error || "Login failed")
             return
          }
 
-         // cookie is automatically stored by browser
-         router.push("/chat")
+         // cookie automatically stored
+         await checkUser()
+         router.push("/")
 
       }catch(err){
          setError("Server error")
@@ -90,15 +90,9 @@ export default function SignupPage(){
    return(
       <div className="container w-screen h-screen flex items-center justify-center">
 
-         <div className="signup-card flex flex-col items-center justify-center gap-4 rounded-lg border p-8">
+         <div className="login-card flex flex-col items-center justify-center gap-4 rounded-lg border p-8">
 
-            <h1 className="text-2xl font-bold">Create Account</h1>
-
-            <Input
-               placeholder="name"
-               value={name}
-               onChange={(e)=>setName(e.target.value)}
-            />
+            <h1 className="text-2xl font-bold">Login to your Account</h1>
 
             <Input
                placeholder="me@example.com"
@@ -119,12 +113,13 @@ export default function SignupPage(){
             <Button
                className="w-full"
                loading={loading}
-               onClick={signupButtonHandler}
+               onClick={loginButtonHandler}
             >
-               Signup
+               Login
             </Button>
 
          </div>
+
       </div>
    )
 }

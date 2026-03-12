@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import express from 'express';
 import type { Request, Response } from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 // import { createServer } from 'node:http'
 // import { Server } from 'socket.io';
 import path from 'path';
@@ -16,12 +18,23 @@ import { MongoNoSQLDB } from './db/db.js';
 import { SignupAction, SignupWebController } from './features/authentication/signup.js';
 import { LoginAction, LoginWebController } from './features/authentication/login.js';
 
+// middlewares
+import { AuthMiddleware } from './middlewares/authMiddleware.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
+
+// Cors setup
+app.use(cors({
+   origin: "http://192.168.0.101:3000",
+   credentials: true
+}))
+
 
 // Database setup
 const connectionAddress = process.env.MONGODB_CONNECTION_STRING;
@@ -70,7 +83,26 @@ authRouter.post('/login', async(req, res)=>{
    const loginController = new LoginWebController<Request, Response>(loginAction)
    await loginController.Login(req, res)
 })
+
+const authMiddleware = new AuthMiddleware(encryptionService, userRepo)
+authRouter.get('/me', authMiddleware.authenticate.bind(authMiddleware), async(req, res)=>{
+   const user = (req as any).user
+   res.status(200).json({ 
+      user: { id: user._id, 
+         name: user.name, 
+         email: user.email 
+      } 
+   })
+})
+
+authRouter.post('/logout', authMiddleware.authenticate.bind(authMiddleware), async(req, res)=>{
+   res.clearCookie("sessionId", { path: "/" })
+   res.status(200).json({ message: "Logged out successfully" })
+})
+   
+
 app.use('/auth', authRouter);
+
 
 app.listen(8000, () => {
    console.log('Server is running on http://localhost:8000');
