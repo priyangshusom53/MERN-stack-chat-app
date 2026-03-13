@@ -3,8 +3,10 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 
 import './App.css'
 
-import Signup from './pages/signup.jsx'
-import Login from './pages/login.jsx'
+// import Signup from './pages/signup.jsx'
+import Signup from './signup/signup.js'
+// import Login from './pages/login.jsx'
+import Login from './login/login.js'
 import Chat from './pages/chat.jsx'
 import Logout from './pages/logout.jsx'
 import { useAuthStore } from './store/useAuthStore.js'
