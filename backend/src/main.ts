@@ -83,12 +83,22 @@ const loginAction = new LoginAction(
 
 const meAction = new AuthUserAction(userRepo)
 
+const createPrivateChatAction = new CreatePrivateChatAction(chatRepo, userRepo)
+
+const getChatsAction = new GetChatsAction(chatRepo)
+
+
 // create controllers
 const signupController = new SignupWebController(signupAction)
 
 const loginController = new LoginWebController(loginAction)
 
 const authUserController = new AuthUserWebController(meAction)
+
+const createPrivateChatController = new CreatePrivateChatWebController(createPrivateChatAction)
+
+const getChatsController = new GetChatsWebController(getChatsAction)
+
 
 // create middlewares
 import { AuthMiddleware } from "./middlewares/authMiddleware.js"
@@ -103,12 +113,20 @@ import { Router } from "express"
 import { addAuthUserRoute, addLoginRoute, addSignupRoute } from "./routes/authRoutes.js"
 import { MessageRepo } from "./db/repos/messageRepo.js"
 import { ChatRepo } from "./db/repos/chatRepo.js"
+import { addCreatePrivateChatRoute, addGetChatsRoute } from "./routes/chatRoutes.js"
+import { CreatePrivateChatAction, CreatePrivateChatWebController } from "./features/chat/createPrivateChat.js"
+import { GetChatsAction, GetChatsWebController } from "./features/chat/getChats.js"
 const authRouter = Router()
 addSignupRoute(authRouter,"/signup",signupController)
 addLoginRoute(authRouter, "/login", loginController)
 addAuthUserRoute(authRouter, "/me", authUserController, authMiddleware)
 app.use("/auth", authRouter)
 
+
+const chatRouter = Router()
+addCreatePrivateChatRoute(chatRouter, "/private",createPrivateChatController, authMiddleware)
+addGetChatsRoute(chatRouter, "/",getChatsController,authMiddleware)
+app.use("/chat", chatRouter)
 
 // run express server
 const PORT = process.env.PORT || 5001

@@ -7,6 +7,11 @@ export interface QueryOptions{
    projection?: Record<string, 0 | 1>
 }
 
+
+// export interface INoSQLDatabase{
+
+// }
+
 export interface IDatabase{
    model(tableName:string):any
 
@@ -50,129 +55,118 @@ export interface IDatabase{
    ):Promise<any>
 }
 
+
+
 import mongoose from 'mongoose'
+import path from 'node:path';
+import url from 'node:url';
+import { type Doc, type WithId } from './schemas.js'
 
-export class MongoNoSQLDB implements IDatabase{
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-   connection:mongoose.Connection
-   schemaMap: Map<string, { modelName:string, schema:mongoose.Schema }>
-   constructor(
-      connection:mongoose.Connection,
-      schemaMap:Map<string, { modelName:string, schema:mongoose.Schema }>
-   ){
-      this.connection = connection
-      this.schemaMap = schemaMap
-   }
+export class MongoNoSQLDB {
 
-   model(tableName:string):mongoose.Model<any> | null{
-      const entry = this.schemaMap.get(tableName)
+   /**
+    * 
+    * @param model model corresponding to mongoose schema
+    * @param query mongoose FilterQuery based on fields of Document
+    * @param options mongoose options object like { limit:6, lean:true, sort:{ createdAt:1 } }
+    * @returns Hydrated Document includes `_id` field with other Document fields
+    */
+   async find<RawDocType extends Doc>(
+      model:mongoose.Model<RawDocType>,
+      query:mongoose.FilterQuery<RawDocType>,
+      options?:mongoose.QueryOptions<RawDocType>
+   ):Promise<WithId<RawDocType>[] | null>{
 
-      if(entry){
-         const { modelName, schema } = entry
-         return this.connection.model(modelName, schema, tableName)
+      try{
+         let q = await model.find<WithId<RawDocType>>(query, null, options)
+         return q
+      }catch(err){
+         console.error(`Error from: ${__filename} `+err)
       }
-
-      return null        
+      return null
    }
 
-   // limit= -1 means all
-   async find(
-   tableName:string,
-   query:object,
-   options?:QueryOptions
-   ):Promise<any[]>{
-
-      const model = this.model(tableName)
-      if(!model) return []
-
-      let q = model.find(query)
-
-      if(options?.projection)
-         q = q.select(options.projection)
-
-      if(options?.sort)
-         q = q.sort(options.sort)
-
-      if(options?.skip)
-         q = q.skip(options.skip)
-
-      if(options?.limit)
-         q = q.limit(options.limit)
-
-      return await q.lean()
+   async findOne<RawDocType extends Doc>(
+      model:mongoose.Model<RawDocType>,
+      query:mongoose.FilterQuery<RawDocType>,
+      options?:mongoose.QueryOptions<RawDocType>
+   ):Promise<WithId<RawDocType> | null>{
+      try{
+         let q = await model.findOne<WithId<RawDocType>>(query, null, options)
+         return q
+      }catch(err){
+         console.error(`Error from: ${__filename} `+err)
+      }
+      return null
    }
 
-   async findOne(
-      tableName:string,
-      query:object,
-      options?:QueryOptions
-   ):Promise<any|null>{
-
-      const model = this.model(tableName)
-      if(!model) return null
-
-      let q = model.findOne(query)
-
-      if(options?.projection)
-         q = q.select(options.projection)
-
-      return await q.lean()
+   async create<RawDocType extends Doc>(
+      model:mongoose.Model<RawDocType>,
+      data:Partial<RawDocType>
+   ):Promise<WithId<RawDocType> | null>{
+      try{
+         const doc = new model(data)
+         await doc.save()
+      }catch(err){
+         console.error(`Error in: ${__filename} `+err)
+      }
+      return null
    }
 
-   async create(
-      tableName:string,
-      data:object
-   ):Promise<any>{
-
-      const model = this.model(tableName)
-      if(!model) throw new Error("Model not found")
-
-      return await model.create(data)
+   async updateOne<RawDocType extends Doc>(
+      model:mongoose.Model<RawDocType>,
+      query:mongoose.FilterQuery<RawDocType>,
+      updateData:Partial<RawDocType>
+   ):Promise<WithId<RawDocType> | null>{
+      try{
+         const q = await model.updateOne<WithId<RawDocType>>(query,{ $set:updateData}).findOne(query)
+         return q
+      }catch(err){
+         console.error(`Error from: ${__filename} `+err)
+      }
+      return null
    }
 
-   async updateOne(
-      tableName:string,
-      query:object,
-      data:object
-   ):Promise<any>{
+   // async updateMany(
+   //    tableName:string,
+   //    query:object,
+   //    data:object
+   // ):Promise<any>{
 
-      const model = this.model(tableName)
-      if(!model) throw new Error("Model not found")
+   //    const model = this.model(tableName)
+   //    if(!model) throw new Error("Model not found")
 
-      return await model.updateOne(query, { $set: data })
+   //    return await model.updateMany(query, { $set: data })
+   // }
+
+   async delete<RawDocType extends Doc>(
+      model:mongoose.Model<RawDocType>,
+      query:mongoose.QueryOptions<RawDocType>
+   ):Promise<boolean | null>{
+
+      try{
+         const q = await model.deleteMany(query)
+         return q.acknowledged
+      }catch(err){
+         console.error(`Error from: ${__filename} `+err)
+      }
+      return null
    }
 
-   async updateMany(
-      tableName:string,
-      query:object,
-      data:object
-   ):Promise<any>{
+   async deleteOne<RawDocType extends Doc>(
+      model:mongoose.Model<RawDocType>,
+      query:mongoose.QueryOptions<RawDocType>
+   ):Promise<boolean | null>{
 
-      const model = this.model(tableName)
-      if(!model) throw new Error("Model not found")
-
-      return await model.updateMany(query, { $set: data })
-   }
-
-   async deleteMany(
-      tableName:string,
-      query:object
-   ):Promise<any>{
-
-      const model = this.model(tableName)
-      if(!model) throw new Error("Model not found")
-
-      return await model.deleteMany(query)
-   }
-
-   async deleteOne(
-      tableName:string,
-      query:object
-   ):Promise<any>{
-
-      const model = this.model(tableName)
-      if(!model) throw new Error("Model not found")
-
-      return await model.deleteOne(query)
+      try{
+         const q = await model.deleteOne(query)
+         return q.acknowledged
+      }catch(err){
+         console.error(`Error from: ${__filename} `+err)
+      }
+      return null
    }
 }

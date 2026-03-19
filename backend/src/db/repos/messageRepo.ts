@@ -1,85 +1,82 @@
 import type { MessageDataAccess } from "../../features/dataAccess/messageDataAccess.js"
-import type { IDatabase } from "../db.js"
+import { MongoNoSQLDB } from "../db.js"
+import { MessageModel, type IMessageSchema, type WithId } from "../schemas.js"
 import { Message } from "../../core/message.js"
+import mongoose from "mongoose"
+
+function FromMessageDocToMessage(doc:WithId<IMessageSchema>){
+   return new Message(
+      doc._id.toString(),
+      doc.chatId.toString(),
+      doc.senderId.toString(),
+      doc.createdAt,
+      doc.text,
+      doc.image || undefined,
+      doc.isDeleted
+   )
+}
+
+function FromMessageToMessageDoc(message:Message){
+   const doc:Partial<IMessageSchema> = {
+      chatId:new mongoose.Types.ObjectId(message.chatId),
+      senderId:new mongoose.Types.ObjectId(message.senderId),
+      text:message.text || "",
+      image:message.image,
+      createdAt:message.sentAt,
+      isDeleted:message.isDeleted
+   }
+   return doc
+}
 
 export class MessageRepo implements MessageDataAccess{
 
-   db:IDatabase
-   tableName:string
+   db:MongoNoSQLDB
+   model:typeof MessageModel
 
    constructor(
-      db:IDatabase,
-      tableName:string
+      db:MongoNoSQLDB,
+      model:typeof MessageModel
    ){
       this.db = db
-      this.tableName = tableName
-   }
-
-   private toDomain(data:any):Message{
-      return new Message(
-         data._id.toString(),
-         data.chatId.toString(),
-         data.senderId.toString(),
-         data.text,
-         data.timestamp
-      )
+      this.model = model
    }
 
    async getMessagesByChatId(chatId:string):Promise<Message[] | null>{
-
-      const results = await this.db.find(
-         this.tableName,
-         { chatId },
-         { sort:{ timestamp:1 } }
-      )
-
-      if(!results.length) return []
-
-      return results.map((m)=>this.toDomain(m))
+      const res = await this.db.find(this.model,{chatId:chatId},{ sort:{ createdAt:-1 }})
+      if(!res) return null
+      const messages = res.map(messageDoc=>{
+         return FromMessageDocToMessage(messageDoc)
+      })
+      return messages
    }
 
    async getLastMessageOfChat(chatId:string):Promise<Message | null>{
 
-      const results = await this.db.find(
-         this.tableName,
-         { chatId },
+      const res = await this.db.find(this.model,{chatId:chatId},
          {
-            sort:{ timestamp:-1 },
+            sort:{createdAt:-1},
             limit:1
          }
       )
-
-      if(!results.length) return null
-
-      return this.toDomain(results[0])
+      if(!res || !res.length) return null
+      return FromMessageDocToMessage(res[0] as WithId<IMessageSchema>)
    }
 
    async getMessageById(id:string):Promise<Message | null>{
-
-      const result = await this.db.findOne(
-         this.tableName,
-         { _id:id }
-      )
-
-      if(!result) return null
-
-      return this.toDomain(result)
+      const res = await this.db.findOne(this.model,{_id:id})
+      if(!res) return null
+      return FromMessageDocToMessage(res)
    }
 
-   async addMessage(data:{senderId:string, text:string, chatId:string}):Promise<Message | null>{
+   async addMessage(data:Message):Promise<Message | null>{
+      const res = await this.db.create(this.model,FromMessageToMessageDoc(data))
+      if(!res) return null
+      return FromMessageDocToMessage(res)
+   }
 
-      const result = await this.db.create(
-         this.tableName,
-         {
-            senderId:data.senderId,
-            chatId:data.chatId,
-            text:data.text,
-            timestamp:new Date()
-         }
-      )
-
-      if(!result) return null
-
-      return this.toDomain(result)
+   async deleteMessage(id:string):Promise<boolean>{
+      let res = await this.db.updateOne(this.model, {_id:id},{isDeleted:true})
+      if(!res) return false
+      return res.isDeleted
    }
 }

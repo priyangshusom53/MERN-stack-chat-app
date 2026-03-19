@@ -8,6 +8,7 @@ export class User{
    profilePicUrl:string | null
    about:string | null
    createdAt:Date
+   updatedAt:Date
    chats:string[] | null // chat ids
 
    constructor(
@@ -16,6 +17,7 @@ export class User{
       email:string,
       password:string,
       createdAt:Date,
+      updatedAt:Date,
       profilePicUrl?:string,
       about?:string,
       chats?:string[]
@@ -25,6 +27,7 @@ export class User{
       this.email = email
       this.password = password
       this.createdAt = createdAt
+      this.updatedAt = updatedAt
       this.profilePicUrl = profilePicUrl || null
       this.about = about || ""
       this.chats = chats || null

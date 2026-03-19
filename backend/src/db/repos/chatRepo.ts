@@ -1,94 +1,53 @@
 import type { ChatDataAccess } from "../../features/dataAccess/chatDataAccess.js"
-import type { IDatabase } from "../db.js"
+import type { IDatabase, MongoNoSQLDB } from "../db.js"
 import { Chat } from "../../core/chat.js"
 import { User } from "../../core/user.js"
+import { ChatModel, type IChatSchema, type WithId } from "../schemas.js"
+
+function FromChatDocToChat(doc:WithId<IChatSchema>){
+   return new Chat(
+      doc._id.toString(),
+      doc.name,
+      doc.isGroupChat,
+      doc.participants.map(participant=>{
+         return participant.toString()
+      }),
+      doc.groupIcon || undefined,
+      doc.createdBy?.toString() || undefined,
+      doc.createdAt,
+      doc.inviteToken || undefined,
+      doc.lastMessage || undefined
+   )
+}
+
+function FromChatToChatDoc(chat:Chat){
+   const doc:Partial<IChatSchema> = {
+      
+   }
+   return doc
+}
 
 export class ChatRepo implements ChatDataAccess{
 
-   db:IDatabase
-   chatTable:string
-   userTable:string
+   db:MongoNoSQLDB
+   model:typeof ChatModel
 
    constructor(
-      db:IDatabase,
-      chatTable:string,
-      userTable:string
+      db:MongoNoSQLDB,
+      model:typeof ChatModel
    ){
       this.db = db
-      this.chatTable = chatTable
-      this.userTable = userTable
+      this.model = model
    }
 
-   private toDomain(data:any):Chat{
-      return new Chat(
-         data._id.toString(),
-         data.name,
-         data.isGroupChat,
-         data.participants.map((p:any)=>p.toString())
-      )
+   async getChatById(id:string):Promise<Chat|null>{
+      const res = await this.db.findOne(this.model,{_id:id})
+      if(!res) return null
+
    }
-
-   private userToDomain(data:any):User{
-      return new User(
-         data._id.toString(),
-         data.name,
-         data.email,
-         data.password,
-         data.createdAt,
-         data.profilePicUrl,
-         data.about,
-         data.chats
-      )
-   }
-
-   async getChatById(id:string):Promise<Chat | null>{
-
-      const result = await this.db.findOne(
-         this.chatTable,
-         { _id:id }
-      )
-
-      if(!result) return null
-
-      return this.toDomain(result)
-   }
-
-   async getParticipants(id:string):Promise<User[] | null>{
-
-      const chat = await this.db.findOne(
-         this.chatTable,
-         { _id:id }
-      )
-
-      if(!chat) return null
-
-      const users = await this.db.find(
-         this.userTable,
-         { _id:{ $in: chat.participants } }
-      )
-
-      return users.map((u:any)=>this.userToDomain(u))
-   }
-
-   async createChat(
-      data:{
-         name:string,
-         isGroupChat:boolean,
-         participants:string[]
-      }
-   ):Promise<Chat | null>{
-
-      const result = await this.db.create(
-         this.chatTable,
-         {
-            name:data.name,
-            isGroupChat:data.isGroupChat,
-            participants:data.participants
-         }
-      )
-
-      if(!result) return null
-
-      return this.toDomain(result)
-   }
+   getChatsOfUser(userId:string):Promise<Chat[] | null>;
+   findPrivateChatBetweenUsers(userA:string,userB:string):Promise<Chat|null>;
+   findGroupChat(id:string):Promise<Chat|null>;
+   createChat(data:Chat):Promise<Chat | null>;
+   deleteChat(chatId:string):Promise<boolean|null>;
 }

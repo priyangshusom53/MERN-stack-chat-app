@@ -1,9 +1,20 @@
 import { useState, useEffect } from "react"
 import { Button, Input } from "@chakra-ui/react"
 import { PasswordInput } from "@/components/ui/password-input"
+import { useNavigate } from "react-router-dom"
+import { useAuthStore } from "../store/authStore.js"
 
 export default function Loginpage(){
 
+   const navigate = useNavigate()
+
+   const { user, isLoading, checkUser } = useAuthStore()
+
+   useEffect(()=>{
+      if(user && !isLoading){
+         navigate("/")
+      }
+   }, [user, isLoading])
 
    const [email,setEmail] = useState("")
    const [password,setPassword] = useState("")
@@ -65,6 +76,8 @@ export default function Loginpage(){
          }
 
          // cookie automatically stored
+         await checkUser()
+         navigate("/")
 
       }catch(err){
          setError("Server error")

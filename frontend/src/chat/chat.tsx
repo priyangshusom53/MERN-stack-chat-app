@@ -1,7 +1,14 @@
 import { Avatar, Box, Button, Card, Flex } from "@chakra-ui/react"
 
+export interface ChatPreview {
+  id: string
+  name: string
+  time: Date
+  lastMessage?: string
+  avatarUrl?: string
+}
 
-export default function ChatItem(
+export function ChatItem(
    { avatar, name, lastMessage, time }:
    {
       avatar:string,
@@ -11,21 +18,31 @@ export default function ChatItem(
    }
 ) {
   return (
-      <div className="chat-item flex flex-row w-full h-64">
-         <div className="avatar-container flex w-1/4 aspect-square">
+      <Box className="chat-item bg-gray-100 hover:bg-gray-400 flex flex-row w-full h-auto">
+         <Box 
+            className="avatar-container flex flex-col items-center justify-center px-auto w-1/4 aspect-square"
+
+         >
             <Avatar.Root>
                <Avatar.Fallback name={name} />
                {/* <Avatar.Image src="https://bit.ly/sage-adebayo" /> */}
             </Avatar.Root>
-         </div>
-         <div className="contact-details flex flex-col w-3/4 h-full gap-2">
-            <div className="contact-name text-lg font-bold text-white">
+         </Box>
+         <Box className="contact-details flex flex-col itemas-center w-3/4"
+            gapX={"2"}
+            py={"auto"}
+            h={"full"}
+            my={"auto"}
+         >
+            <Box className="contact-name flex-1 text-sm font-bold text-black h-auto"
+               p={"0"}
+            >
                {name}
-            </div>
-            <div className="last-message text-sm text-gray-500">   
+            </Box>
+            <Box className="last-message flex-1 text-xs text-gray-500">   
                {lastMessage}  
-            </div>
-         </div>
-      </div>
+            </Box>
+         </Box>
+      </Box>
   );
 }
