@@ -5,7 +5,7 @@ export class Chat{
    name:string
    isGroupChat:boolean
    participants:string[] // receiver id array
-   groupIcon:string | null
+   icon:string | null
    createdBy:string | null
    createdAt: Date | null
    inviteToken:string | null
@@ -16,7 +16,7 @@ export class Chat{
       name:string,
       isGroupChat:boolean,
       participants:string[],
-      groupIcon?:string,
+      icon?:string,
       createdBy?:string,
       createdAt?:Date,
       inviteToken?:string,
@@ -26,7 +26,7 @@ export class Chat{
       this.name = name
       this.isGroupChat = isGroupChat
       this.participants = participants
-      this.groupIcon = groupIcon || null
+      this.icon = icon || null
       this.createdBy = createdBy || null
       this.createdAt = createdAt || null
       this.inviteToken = inviteToken || null

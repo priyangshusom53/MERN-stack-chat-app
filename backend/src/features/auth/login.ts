@@ -1,16 +1,21 @@
-export interface LoginWebRequest{
+import type { RequestDS, ResponseDS, Action } from "../action.js"
+import { User } from "../../core/user.js"
+import type { UserDataAccess } from "../dataAccess/userDataAccess.js"
+import type { EncryptionService, ExpiryTime } from "../encryption/encryptionService.js"
+import { durationToMs } from "../../utils.js"
+import type { Request, Response } from "express"
+import { ExpiryTimeToMS, type TokenService } from "../tokenService/tokenService.js"
+
+export interface LoginWebRequest extends Request{
    body:{
       email:string
       password:string
    }
 }
 
-export interface LoginWebResponse{}
+export interface LoginWebResponse extends Response{}
 
-export class LoginWebController<
-   WebRequestType extends LoginWebRequest,
-   WebResponseType extends LoginWebResponse
->{
+export class LoginWebController{
 
    action: LoginAction
 
@@ -18,7 +23,7 @@ export class LoginWebController<
       this.action = action
    }
 
-   async login(req:WebRequestType, res:WebResponseType){
+   async login(req:LoginWebRequest, res:LoginWebResponse){
 
       try{
 
@@ -52,11 +57,13 @@ export class LoginWebController<
          return res.status(200).json({
             success:true,
             user:{
-               id:responseDS.user?.id,
-               name:responseDS.user?.name,
-               email:responseDS.user?.email,
-               about:responseDS.user?.about,
-               chats:responseDS.user?.chats
+               id:responseDS.user.id,
+               name:responseDS.user.name,
+               email:responseDS.user.email,
+               profilePicUrl:responseDS.user.profilePicUrl,
+               about:responseDS.user.about,
+               createdAt:responseDS.user.createdAt,
+               updatedAt:responseDS.user.updatedAt
             }
          })
 
@@ -71,26 +78,32 @@ export class LoginWebController<
    }
 }
 
-import type { RequestDS, ResponseDS, Action } from "../action.js"
-import { User } from "../../core/user.js"
-import type { UserDataAccess } from "../dataAccess/userDataAccess.js"
-import type { EncryptionService, ExpiryTime } from "../encryption/encryptionService.js"
-import { durationToMs } from "../../utils.js"
 
-interface LoginRequestDS extends RequestDS{
+enum LoginErrorTypes{
+   InvalidCredentials="INVALID_CREDENTIALS_ERROR",
+   TokenError="TOKEN_GENERATION_ERROR",
+   DatabaseError="DATABASE_ERROR",
+   UserNotFound="USER_NOT_FOUND_ERROR",
+   NoError=""
+}
+
+type LoginRequestDS = RequestDS & {
    email:string
    password:string
 }
 
-interface LoginResponseDS extends ResponseDS{
-   user?:User
-   session?:{
+type LoginResponseDS = ResponseDS<{
+   user:User
+   session:{
       token:string
       expiresIn:number
    }
-   errorType:string
+   errorType:LoginErrorTypes
    error:string
-}
+},{
+   errorType:LoginErrorTypes
+   error:string
+}>
 
 export class LoginAction implements Action<LoginRequestDS, LoginResponseDS>{
 
@@ -100,14 +113,14 @@ export class LoginAction implements Action<LoginRequestDS, LoginResponseDS>{
    }
 
    userDataAccess:UserDataAccess
-   encryptionService:EncryptionService
+   tokenService:TokenService
 
    constructor(
       userDataAccess:UserDataAccess,
-      encryptionService:EncryptionService
+      tokenService:TokenService
    ){
       this.userDataAccess = userDataAccess
-      this.encryptionService = encryptionService
+      this.tokenService = tokenService
    }
 
    async execute(req:LoginRequestDS):Promise<LoginResponseDS>{
@@ -117,7 +130,7 @@ export class LoginAction implements Action<LoginRequestDS, LoginResponseDS>{
       if(!user){
          return {
             success:false,
-            errorType:"USER_NOT_FOUND",
+            errorType:LoginErrorTypes.UserNotFound,
             error:"User does not exist"
          }
       }
@@ -126,37 +139,29 @@ export class LoginAction implements Action<LoginRequestDS, LoginResponseDS>{
       if(user.password !== req.password){
          return {
             success:false,
-            errorType:"INVALID_CREDENTIALS",
+            errorType:LoginErrorTypes.InvalidCredentials,
             error:"Invalid email or password"
          }
       }
 
-      const token = await this.encryptionService.encrypt(
-         {
-            id:user.id,
-            password:user.password
-         },
-         this.SESSION_DURATION
-      )
+      const token = this.tokenService.encode({id:user.id},this.SESSION_DURATION)
 
       if(!token){
          return {
             success:false,
-            errorType:"ENCRYPTION_ERROR",
+            errorType:LoginErrorTypes.TokenError,
             error:"Failed to generate session token"
          }
       }
-
-      const expiresIn = durationToMs(this.SESSION_DURATION)
 
       return {
          success:true,
          user,
          session:{
             token,
-            expiresIn
+            expiresIn:ExpiryTimeToMS(this.SESSION_DURATION)
          },
-         errorType:"",
+         errorType:LoginErrorTypes.NoError,
          error:""
       }
    }

@@ -8,6 +8,6 @@ export interface RequestDS{
 
 }
 
-export interface ResponseDS{
-   success:boolean
-}
+export type ResponseDS<TSuccess = {}, TError = {}> =
+  | ({ success: true } & TSuccess)
+  | ({ success: false } & TError)

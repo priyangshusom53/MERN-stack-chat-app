@@ -2,9 +2,10 @@ import type { Request, Response, NextFunction } from "express"
 import type { EncryptionService } from "../features/encryption/encryptionService.js"
 import type { UserDataAccess } from "../features/dataAccess/userDataAccess.js"
 import type { User } from "../core/user.js"
+import type { TokenService } from "../features/tokenService/tokenService.js"
 
 
-export interface AuthenticatedWebRequest{
+export interface AuthenticatedWebRequest extends Request{
    cookies:{
       sessionID?:string
    }
@@ -13,18 +14,18 @@ export interface AuthenticatedWebRequest{
 
 export class AuthMiddleware{
 
-   encryptionService: EncryptionService
+   tokenSerivce: TokenService
    userDataAccess: UserDataAccess
 
    constructor(
-      encryptionService: EncryptionService,
+      tokenSerivce: TokenService,
       userDataAccess: UserDataAccess
    ){
-      this.encryptionService = encryptionService
+      this.tokenSerivce = tokenSerivce
       this.userDataAccess = userDataAccess
    }
 
-   async handle(req:Request, res:Response, next:NextFunction){
+   async handle(req:AuthenticatedWebRequest, res:Response, next:NextFunction){
 
       try{
 
@@ -33,11 +34,11 @@ export class AuthMiddleware{
          if(!token){
             return res.status(401).json({
                success:false,
-               error:"No session cookie"
+               error:"No session cookie provided"
             })
          }
 
-         const payload = await this.encryptionService.decrypt(token)
+         const payload = this.tokenSerivce.decode(token)
 
          if(!payload){
             return res.status(401).json({
@@ -46,9 +47,8 @@ export class AuthMiddleware{
             })
          }
 
-         const { id, password } = payload as {
+         const { id } = payload as {
             id:string
-            password:string
          }
 
          const user = await this.userDataAccess.getUserById(id)
@@ -60,25 +60,16 @@ export class AuthMiddleware{
             })
          }
 
-         // verify password still matches DB
-         if(user.password !== password){
-            return res.status(401).json({
-               success:false,
-               error:"Session invalid"
-            })
-         }
-
-         (req as any).user = user
+         req.user = user
 
          next()
 
       }catch(err){
 
-         return res.status(401).json({
+         return res.status(500).json({
             success:false,
-            error:"Authentication failed"
+            error:"Server error"
          })
       }
-
    }
 }

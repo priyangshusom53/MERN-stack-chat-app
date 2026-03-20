@@ -1,5 +1,5 @@
 import type { Router, Request, Response } from "express";
-import type { CreatePrivateChatWebController } from "../features/chat/createPrivateChat.js";
+import type { CreatePrivateChatWebController } from "../features/chat/createChat.js";
 import type { GetChatsWebController } from "../features/chat/getChats.js";
 import { AuthMiddleware } from "../middlewares/authMiddleware.js";
 

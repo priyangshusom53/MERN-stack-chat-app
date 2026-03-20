@@ -1,12 +1,15 @@
 import type { AuthenticatedWebRequest } from "../../middlewares/authMiddleware.js"
+import type { Action, RequestDS, ResponseDS } from "../action.js"
+import { Chat } from "../../core/chat.js"
+import type { ChatDataAccess } from "../dataAccess/chatDataAccess.js"
+import type { Request, Response } from "express"
+import type { User } from "../../core/user.js"
 
-export interface GetChatsWebRequest{}
+export interface GetChatsWebRequest extends AuthenticatedWebRequest{}
 
-export interface GetChatsWebResponse{}
+export interface GetChatsWebResponse extends Response{}
 
-export class GetChatsWebController<
-WebRequestType extends AuthenticatedWebRequest,
-WebResponseType extends GetChatsWebResponse>{
+export class GetChatsWebController{
 
    action:GetChatsAction
 
@@ -14,10 +17,18 @@ WebResponseType extends GetChatsWebResponse>{
       this.action = action
    }
 
-   async getChats(req:WebRequestType,res:WebResponseType){
+   async getChats(req:GetChatsWebRequest,res:GetChatsWebResponse){
 
+      if(!req.user){
+         res.status(401).json({
+            success:false,
+            errorType:"AUTH_ERROR",
+            error:"user not authenticated"
+         })
+         return
+      }
       const requestDS:GetChatsRequestDS = {
-         userId:req.user?.id || ""
+         user:req.user
       }
 
       const responseDS = await this.action.execute(requestDS)
@@ -39,20 +50,24 @@ WebResponseType extends GetChatsWebResponse>{
 }
 
 
-
-import type { Action, RequestDS, ResponseDS } from "../action.js"
-import { Chat } from "../../core/chat.js"
-import type { ChatDataAccess } from "../dataAccess/chatDataAccess.js"
-
-interface GetChatsRequestDS extends RequestDS{
-   userId:string
+enum GetChatsErrorTypes{
+   DatabaseError="DATABASE_ERROR",
+   NoError=""
 }
 
-interface GetChatsResponseDS extends ResponseDS{
-   chats?:Chat[]
-   errorType:string
+type GetChatsRequestDS = RequestDS & {
+   user:User
+}
+
+type GetChatsResponseDS = ResponseDS<
+{
+   chats:Chat[]
+   errorType:GetChatsErrorTypes
    error:string
-}
+},{
+   errorType:GetChatsErrorTypes
+   error:string
+}>
 
 export class GetChatsAction
 implements Action<GetChatsRequestDS,GetChatsResponseDS>{
@@ -65,12 +80,12 @@ implements Action<GetChatsRequestDS,GetChatsResponseDS>{
 
    async execute(req:GetChatsRequestDS):Promise<GetChatsResponseDS>{
 
-      const chats = await this.chatDataAccess.getChatsOfUser(req.userId)
+      const chats = await this.chatDataAccess.getChatsOfUser(req.user.id)
 
       if(!chats){
          return{
             success:false,
-            errorType:"DATABASE_ERROR",
+            errorType:GetChatsErrorTypes.DatabaseError,
             error:"Failed to fetch chats"
          }
       }
@@ -78,7 +93,7 @@ implements Action<GetChatsRequestDS,GetChatsResponseDS>{
       return{
          success:true,
          chats,
-         errorType:"",
+         errorType:GetChatsErrorTypes.NoError,
          error:""
       }
    }

@@ -4,7 +4,7 @@ import { MessageModel, type IMessageSchema, type WithId } from "../schemas.js"
 import { Message } from "../../core/message.js"
 import mongoose from "mongoose"
 
-function FromMessageDocToMessage(doc:WithId<IMessageSchema>){
+export function FromMessageDocToMessage(doc:WithId<IMessageSchema>){
    return new Message(
       doc._id.toString(),
       doc.chatId.toString(),
@@ -16,7 +16,7 @@ function FromMessageDocToMessage(doc:WithId<IMessageSchema>){
    )
 }
 
-function FromMessageToMessageDoc(message:Message){
+export function FromMessageToMessageDoc(message:Message){
    const doc:Partial<IMessageSchema> = {
       chatId:new mongoose.Types.ObjectId(message.chatId),
       senderId:new mongoose.Types.ObjectId(message.senderId),

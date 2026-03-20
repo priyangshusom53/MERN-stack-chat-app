@@ -1,8 +1,4 @@
 
-export interface EncryptionService{
-   encrypt(payload:object, expiresIn:ExpiryTime):Promise<string | null>;
-   decrypt(token:string):Promise<object | null>;
-}
 
 export type ExpiryUnit = "s" | "m" | "h" | "d"
 
@@ -24,4 +20,11 @@ export function ExpiryTimeToMS(time:ExpiryTime):number{
       default:
          return 0
    }
+}
+
+export type payload = Record<string,string>
+
+export interface TokenService{
+   encode(payload:payload, expiresIn:ExpiryTime):string|null;
+   decode(token:string):payload|null;
 }

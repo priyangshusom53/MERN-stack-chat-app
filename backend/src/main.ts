@@ -114,7 +114,7 @@ import { addAuthUserRoute, addLoginRoute, addSignupRoute } from "./routes/authRo
 import { MessageRepo } from "./db/repos/messageRepo.js"
 import { ChatRepo } from "./db/repos/chatRepo.js"
 import { addCreatePrivateChatRoute, addGetChatsRoute } from "./routes/chatRoutes.js"
-import { CreatePrivateChatAction, CreatePrivateChatWebController } from "./features/chat/createPrivateChat.js"
+import { CreatePrivateChatAction, CreatePrivateChatWebController } from "./features/chat/createChat.js"
 import { GetChatsAction, GetChatsWebController } from "./features/chat/getChats.js"
 const authRouter = Router()
 addSignupRoute(authRouter,"/signup",signupController)

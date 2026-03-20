@@ -99,7 +99,7 @@ export interface IChatSchema{
    name:string;
    isGroupChat:boolean;
    participants:mongoose.Types.ObjectId[];
-   groupIcon:string | null;
+   icon:string | null;
    createdBy:mongoose.Types.ObjectId | null;
    inviteToken:string | null;
    lastMessage:mongoose.Types.ObjectId | null;
@@ -129,7 +129,7 @@ export const chatSchema = new mongoose.Schema<IChatSchema>(
       }
    ],
 
-   groupIcon:{
+   icon:{
       type:String,
       default:null
    },

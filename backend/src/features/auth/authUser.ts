@@ -1,14 +1,23 @@
 import { User } from "../../core/user.js"
+import type { Action, RequestDS, ResponseDS } from "../action.js"
+import type { UserDataAccess } from "../dataAccess/userDataAccess.js"
+import type { Request, Response } from "express"
+
+export interface AuthUserWebRequest extends Request{
+   user:User
+}
+
+export interface AuthUserWebResponse extends Response{}
 
 export class AuthUserWebController{
 
-   action:AuthUserAction
+   action:Action<MeRequestDS,MeResponseDS>
 
-   constructor(action:AuthUserAction){
+   constructor(action:Action<MeRequestDS,MeResponseDS>){
       this.action = action
    }
 
-   async getUser(req:any, res:any){
+   async getUser(req:AuthUserWebRequest, res:AuthUserWebResponse){
 
       const requestDS = {
          user:req.user
@@ -30,16 +39,11 @@ export class AuthUserWebController{
 }
 
 
-import type { Action, RequestDS, ResponseDS } from "../action.js"
-import type { UserDataAccess } from "../dataAccess/userDataAccess.js"
-
-interface MeRequestDS extends RequestDS{
+type MeRequestDS = RequestDS & {
    user:User
 }
 
-interface MeResponseDS extends ResponseDS{
-   user?:User
-}
+type MeResponseDS = ResponseDS<{user:User},{}>
 
 export class AuthUserAction implements Action<MeRequestDS, MeResponseDS>{
 
@@ -50,8 +54,6 @@ export class AuthUserAction implements Action<MeRequestDS, MeResponseDS>{
    }
 
    async execute(req:MeRequestDS):Promise<MeResponseDS>{
-
-      // const user = await this.userDataAccess.getUserById(req.userId)
 
       if(!req.user){
          return { success:false }
