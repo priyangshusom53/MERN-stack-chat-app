@@ -4,14 +4,14 @@ import type { LoginWebController } from "../features/auth/login.js"
 import type { AuthUserWebController } from "../features/auth/authUser.js"
 import type { AuthMiddleware } from "../middlewares/authMiddleware.js"
 
-export function addSignupRoute(router:express.Router, subroute:string, controller: SignupWebController<Request, Response>){
+export function addSignupRoute(router:express.Router, subroute:string, controller: SignupWebController){
    router.post(
       subroute,
       controller.signup.bind(controller)
    )
 }
 
-export function addLoginRoute(router:express.Router, subroute:string, controller: LoginWebController<Request, Response>){
+export function addLoginRoute(router:express.Router, subroute:string, controller: LoginWebController){
    router.post(
       subroute,
       controller.login.bind(controller)

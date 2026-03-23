@@ -55,7 +55,8 @@ export class ChatRepo implements ChatDataAccess{
    }
 
    async getChatsOfUser(userId:string):Promise<Chat[] | null>{
-      const res = await this.db.find(this.model, {participants:userId},{sort:{updatedAt:-1},populate:"lastMessage"})
+      const res = await this.db.find(this.model, { participants: new mongoose.Types.ObjectId(userId) },{sort:{updatedAt:-1},populate:"lastMessage"})
+
       if(!res) return null
       const chats = res.map(chat=>{
          return FromChatDocToChat(chat,chat.lastMessage as any)

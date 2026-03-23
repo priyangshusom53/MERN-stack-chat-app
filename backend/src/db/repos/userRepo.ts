@@ -68,6 +68,7 @@ export class UserRepo implements UserDataAccess{
 
    async getUserByEmail(email:string):Promise<User|null>{
       const res = await this.db.findOne(this.model,{email:email})
+      // console.log(res)
       if(!res) return null
       return FromUserDocToUser(res)
    }

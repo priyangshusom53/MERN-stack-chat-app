@@ -67,7 +67,9 @@ export class SignupWebController{
                about:responseDS.user.about,
                createdAt:responseDS.user.createdAt,
                updatedAt:responseDS.user.updatedAt
-            }
+            },
+            errorType:responseDS.errorType,
+            error:responseDS.error
          })
 
       }catch(err){
@@ -131,6 +133,12 @@ export class SignupAction implements Action<SignupRequestDS, SignupResponseDS>{
    }
 
    async execute(req: SignupRequestDS):Promise<SignupResponseDS>{
+
+      /// DEBUG LOG
+      console.log("Method: POST")
+      console.log("Route: auth/signup")
+      console.log("Content: Auth User")
+      /// DEBUG LOG
 
       if(!req.name.trim() || !req.email.trim() || !req.password.length){
          return {

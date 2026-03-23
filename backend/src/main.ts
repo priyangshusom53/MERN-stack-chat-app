@@ -58,32 +58,41 @@ const schemaMap = new Map<string, { modelName:string, schema:mongoose.Schema}>([
    [collectionNames.chatModel, {modelName:modelNames.chatModel, schema:chatSchema}]
 ])
 
-const db = new MongoNoSQLDB(connection, schemaMap)
+const db = new MongoNoSQLDB()
 // Create repos in infra layer for data access
-const userRepo = new UserRepo(db, collectionNames.userModel)
-const messageRepo = new MessageRepo(db, collectionNames.messageModel)
+const UserModel = connection.model(modelNames.userModel, userSchema, collectionNames.userModel)
+
+const MessageModel = connection.model(modelNames.messageModel, messageSchema, collectionNames.messageModel)
+
+const ChatModel = connection.model(modelNames.chatModel, chatSchema, collectionNames.chatModel)
+
+const userRepo = new UserRepo(db, UserModel)
+const messageRepo = new MessageRepo(db, MessageModel)
 const chatRepo = new ChatRepo(
    db, 
-   collectionNames.chatModel,
-   collectionNames.userModel
+   ChatModel
 )
 
-const encryptionService = new JwtEncryptionService()
+// const encryptionService = new JwtEncryptionService()
+if(!process.env.JWT_SECRET){
+   throw new Error("Jwt secret not found in env")
+}
+const tokenService = new JWTTokenService(process.env.JWT_SECRET)
 
 // create actions 
 const signupAction = new SignupAction(
    userRepo,
-   encryptionService
+   tokenService
 )
 
 const loginAction = new LoginAction(
    userRepo,
-   encryptionService
+   tokenService
 )
 
 const meAction = new AuthUserAction(userRepo)
 
-const createPrivateChatAction = new CreatePrivateChatAction(chatRepo, userRepo)
+const createChatAction = new CreateChatAction(chatRepo, userRepo)
 
 const getChatsAction = new GetChatsAction(chatRepo)
 
@@ -95,7 +104,7 @@ const loginController = new LoginWebController(loginAction)
 
 const authUserController = new AuthUserWebController(meAction)
 
-const createPrivateChatController = new CreatePrivateChatWebController(createPrivateChatAction)
+const createChatController = new CreateChatWebController(createChatAction)
 
 const getChatsController = new GetChatsWebController(getChatsAction)
 
@@ -104,7 +113,7 @@ const getChatsController = new GetChatsWebController(getChatsAction)
 import { AuthMiddleware } from "./middlewares/authMiddleware.js"
 
 const authMiddleware = new AuthMiddleware(
-   encryptionService,
+   tokenService,
    userRepo
 )
 
@@ -113,9 +122,10 @@ import { Router } from "express"
 import { addAuthUserRoute, addLoginRoute, addSignupRoute } from "./routes/authRoutes.js"
 import { MessageRepo } from "./db/repos/messageRepo.js"
 import { ChatRepo } from "./db/repos/chatRepo.js"
-import { addCreatePrivateChatRoute, addGetChatsRoute } from "./routes/chatRoutes.js"
-import { CreatePrivateChatAction, CreatePrivateChatWebController } from "./features/chat/createChat.js"
+import { addCreateChatRoute, addGetChatsRoute } from "./routes/chatRoutes.js"
+import { CreateChatAction, CreateChatWebController } from "./features/chat/createChat.js"
 import { GetChatsAction, GetChatsWebController } from "./features/chat/getChats.js"
+import { JWTTokenService } from "./features/tokenService/jwt.js"
 const authRouter = Router()
 addSignupRoute(authRouter,"/signup",signupController)
 addLoginRoute(authRouter, "/login", loginController)
@@ -124,7 +134,7 @@ app.use("/auth", authRouter)
 
 
 const chatRouter = Router()
-addCreatePrivateChatRoute(chatRouter, "/private",createPrivateChatController, authMiddleware)
+addCreateChatRoute(chatRouter, "/new",createChatController, authMiddleware)
 addGetChatsRoute(chatRouter, "/",getChatsController,authMiddleware)
 app.use("/chat", chatRouter)
 

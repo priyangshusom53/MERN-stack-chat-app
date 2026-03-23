@@ -80,6 +80,12 @@ implements Action<GetChatsRequestDS,GetChatsResponseDS>{
 
    async execute(req:GetChatsRequestDS):Promise<GetChatsResponseDS>{
 
+      /// DEBUG LOG
+      console.log("Method: GET")
+      console.log("Route: chat/")
+      console.log("Content: Chat[]")
+      /// DEBUG LOG
+
       const chats = await this.chatDataAccess.getChatsOfUser(req.user.id)
 
       if(!chats){
@@ -92,7 +98,7 @@ implements Action<GetChatsRequestDS,GetChatsResponseDS>{
 
       return{
          success:true,
-         chats,
+         chats:chats,
          errorType:GetChatsErrorTypes.NoError,
          error:""
       }

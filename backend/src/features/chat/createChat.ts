@@ -15,7 +15,7 @@ export interface CreateChatWebRequest extends AuthenticatedWebRequest{
    body:{
       type:'private' | 'group',
       name?:string,
-      participants:string[]
+      participants:string[] // user emails
    }
 }
 
@@ -29,7 +29,7 @@ export class CreateChatWebController{
       this.action = action
    }
 
-   async createPrivateChat(req:CreateChatWebRequest,res:CreateChatWebResponse){
+   async createChat(req:CreateChatWebRequest,res:CreateChatWebResponse){
 
       try{
          if(!req.user){
@@ -64,7 +64,7 @@ export class CreateChatWebController{
             success:true,
             chat:responseDS.chat
          })
-         
+
       }catch(err){
          console.error(`Error in file: ${__filename} `+err)
          res.status(500).json({
@@ -85,7 +85,7 @@ type CreateChatRequestDS = RequestDS & {
    user:User,
    isGroupChat:boolean,
    name:string | null,
-   participants:string[]
+   participants:string[] // user emails
 }
 
 type CreateChatResponseDS = ResponseDS<
@@ -98,7 +98,7 @@ type CreateChatResponseDS = ResponseDS<
    error:string
 }>
 
-export class CreatePrivateChatAction
+export class CreateChatAction
 implements Action<CreateChatRequestDS,CreateChatResponseDS>{
 
    chatDataAccess:ChatDataAccess
@@ -115,6 +115,12 @@ implements Action<CreateChatRequestDS,CreateChatResponseDS>{
    async execute(
       req:CreateChatRequestDS
    ):Promise<CreateChatResponseDS>{
+
+      /// DEBUG LOG
+      console.log("Method: POST")
+      console.log("Route: chat/new")
+      console.log("Content: new Chat")
+      /// DEBUG LOG
 
       if(req.isGroupChat){
 
@@ -153,6 +159,11 @@ implements Action<CreateChatRequestDS,CreateChatResponseDS>{
                error:"failed to create chat"
             }
          }
+
+         // add this chat id to user chats[]
+         if(!req.user.chats) req.user.chats = [group.id]
+         else req.user.chats.push(group.id) 
+         const updatedUser = await this.userDataAccess.updateUser(req.user)
 
          return {
             success:true,

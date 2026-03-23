@@ -1,18 +1,18 @@
 import type { Router, Request, Response } from "express";
-import type { CreatePrivateChatWebController } from "../features/chat/createChat.js";
+import type { CreateChatWebController } from "../features/chat/createChat.js";
 import type { GetChatsWebController } from "../features/chat/getChats.js";
 import { AuthMiddleware } from "../middlewares/authMiddleware.js";
 
-export function addCreatePrivateChatRoute(
+export function addCreateChatRoute(
    router:Router,
    subroute:string,
-   controller:CreatePrivateChatWebController<any, any>,
+   controller:CreateChatWebController,
    auth:AuthMiddleware
 ){
    router.post(
       subroute,
       auth.handle.bind(auth),
-      controller.createPrivateChat.bind(controller)
+      controller.createChat.bind(controller)
    )
 }
 
@@ -20,7 +20,7 @@ export function addCreatePrivateChatRoute(
 export function addGetChatsRoute(
    router:Router,
    subroute:string,
-   controller:GetChatsWebController<any,any>,
+   controller:GetChatsWebController,
    auth:AuthMiddleware
 ){
    router.get(

@@ -1,11 +1,10 @@
 import { User } from "../../core/user.js"
+import type { AuthenticatedWebRequest } from "../../middlewares/authMiddleware.js"
 import type { Action, RequestDS, ResponseDS } from "../action.js"
 import type { UserDataAccess } from "../dataAccess/userDataAccess.js"
 import type { Request, Response } from "express"
 
-export interface AuthUserWebRequest extends Request{
-   user:User
-}
+export interface AuthUserWebRequest extends AuthenticatedWebRequest{}
 
 export interface AuthUserWebResponse extends Response{}
 
@@ -19,13 +18,19 @@ export class AuthUserWebController{
 
    async getUser(req:AuthUserWebRequest, res:AuthUserWebResponse){
 
+      if(!req.user){
+         return res.status(401).json({
+            success:false
+         })
+      }
+
       const requestDS = {
          user:req.user
       }
 
-      const response = await this.action.execute(requestDS)
+      const responseDS = await this.action.execute(requestDS)
 
-      if(!response.success){
+      if(!responseDS.success){
          return res.status(401).json({
             success:false
          })
@@ -33,7 +38,15 @@ export class AuthUserWebController{
 
       return res.json({
          success:true,
-         user:response.user
+         user:{
+            id:responseDS.user.id,
+            name:responseDS.user.name,
+            email:responseDS.user.email,
+            profilePicUrl:responseDS.user.profilePicUrl,
+            about:responseDS.user.about,
+            createdAt:responseDS.user.createdAt,
+            updatedAt:responseDS.user.updatedAt
+         }
       })
    }
 }
@@ -54,6 +67,12 @@ export class AuthUserAction implements Action<MeRequestDS, MeResponseDS>{
    }
 
    async execute(req:MeRequestDS):Promise<MeResponseDS>{
+
+      /// DEBUG LOG
+      console.log("Method: GET")
+      console.log("Route: auth/me")
+      console.log("Content: Auth User")
+      /// DEBUG LOG
 
       if(!req.user){
          return { success:false }

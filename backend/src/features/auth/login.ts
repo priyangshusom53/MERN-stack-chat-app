@@ -43,16 +43,14 @@ export class LoginWebController{
          }
 
          // set cookie
-         if(responseDS.session){
-            // cookie name sessionID
-            res.cookie("sessionID", responseDS.session.token,{
-               httpOnly:true,
-               secure:process.env.NODE_ENV === "production",
-               sameSite:"lax",
-               path: "/",
-               maxAge:responseDS.session.expiresIn
-            })
-         }
+         // cookie name sessionID
+         res.cookie("sessionID", responseDS.session.token,{
+            httpOnly:true,
+            secure:process.env.NODE_ENV === "production",
+            sameSite:"lax",
+            path: "/",
+            maxAge:responseDS.session.expiresIn
+         })
 
          return res.status(200).json({
             success:true,
@@ -64,7 +62,9 @@ export class LoginWebController{
                about:responseDS.user.about,
                createdAt:responseDS.user.createdAt,
                updatedAt:responseDS.user.updatedAt
-            }
+            },
+            errorType:responseDS.errorType,
+            error:responseDS.error
          })
 
       }catch(err){
@@ -124,6 +124,13 @@ export class LoginAction implements Action<LoginRequestDS, LoginResponseDS>{
    }
 
    async execute(req:LoginRequestDS):Promise<LoginResponseDS>{
+
+
+      /// DEBUG LOG
+      console.log("Method: POST")
+      console.log("Route: auth/login")
+      console.log("Content: Auth User")
+      /// DEBUG LOG
 
       const user = await this.userDataAccess.getUserByEmail(req.email)
 

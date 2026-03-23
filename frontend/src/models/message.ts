@@ -1,9 +1,10 @@
 
 export interface Message{
-   id:string;
-   chatId: string;
-   isGroupChat:boolean;
-   senderId: string;
-   text: string;
-   timestamp: Date;
+   id: string
+   chatId: string
+   senderId: string
+   text: string | null
+   image: string | null
+   sentAt: Date
+   isDeleted:boolean
 }
